@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3399ff</color>
+    <color name="colorPrimaryDark">#3333ff</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorlightBlue">#cce6ff</color>
+    <color name="colorBlue">#3399ff</color>
+    <color name="colorTransparentWhite">#80FFFFFF</color>
+
+    <color name="mainGradStart">#0575E6</color>
+    <color name="mainGradEnd">#021B79</color>
+
+    <color name="blueGray">#676375</color>
+
+    <color name="coalStart">#EB5757</color>
+    <color name="coalEnd">#000000</color>
+    
+    <color name="mosStart">#780206</color>
+    <color name="mosEnd">#061161</color>
+
+    <color name="button_green">#02f232</color>
+
+    <color name="stripe_start">#1FA2FF</color>
+    <color name="stripe_mid">#12D8FA</color>
+    <color name="stripe_end">#A6FFCB</color>
+
+    <color name="netflix_start">#8E0E00</color>
+    <color name="netflix_end">#1F1C18</color>
+</resources>

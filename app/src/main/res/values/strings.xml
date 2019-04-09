@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Smart Meter</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_usage">Usage</string>
+    <string name="nav_notice">Notice</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="powerbtn_message_off">do you want to offline the system?</string>
+    <string name="powerbtn_message_on">do you want to online the system?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="powerbtn_title">Power Change</string>
+    <string name="title_activity_show_profile">ShowProfileActivity</string>
+</resources>

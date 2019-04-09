@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:orientation="vertical"
+    android:background="@drawable/header_layout_theme"
+    android:id="@+id/nav_header">
+
+    <ImageView
+        android:id="@+id/logo_view"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        app:srcCompat="@drawable/ceb_splash_logo" />
+
+    <TextView
+        android:id="@+id/usernametxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text=""
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/emailtxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="abc1234@gmail.com"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:textSize="15sp"/>
+
+</LinearLayout>
