@@ -45,6 +45,7 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView emailOut;
     private LinearLayout navigationHeader;
     private NavigationView navigationView;
+    private Menu menu;
 
     //Initialize the fragments
     private HomeFragment homeFragment;
@@ -185,16 +186,17 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void setToolBar(Toolbar toolbar,String meterId) {
-        toolbar.setTitle("CEB Smart Meter");
+        toolbar.setTitle("Smart Meter");
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite,null));
         setSupportActionBar(toolbar);
         toolbar.setSubtitle("Meter ID : "+meterId);
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorWhite,null));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorYellow,null));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        this.menu=menu;
         return true;
     }
 

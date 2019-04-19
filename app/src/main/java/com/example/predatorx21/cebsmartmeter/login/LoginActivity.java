@@ -65,4 +65,9 @@ public class LoginActivity extends AppCompatActivity {
             Log.e("DBE",e.getMessage());
         }
     }
+
+    public void registerNewUser(View view){
+        Intent intent=new Intent(LoginActivity.this,RegistrationActivity.class);
+        startActivity(intent);
+    }
 }

@@ -30,17 +30,19 @@ public class DB {
         return connection;
     }
 
-    public static void updateDB(String updateQuery){
+    public static boolean updateDB(String updateQuery){
+        boolean flag=false;
         if(connection==null){
             createNewConnection();
         }
         try {
             Statement statement=connection.createStatement();
-            statement.execute(updateQuery);
+            flag=statement.execute(updateQuery);
         } catch (SQLException e) {
             e.printStackTrace();
             Log.e("DBE",e.getMessage());
         }
+        return flag;
     }
 
     public static ResultSet searchDB(String searchQuery){

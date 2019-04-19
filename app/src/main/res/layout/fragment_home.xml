@@ -9,19 +9,19 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/stripe_theme">
+        android:background="@color/colorLightGray">
 
         <Button
             android:id="@+id/power_button"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="25dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/power_btn_theme"
             android:text="System Online"
             android:textColor="@color/colorWhite"
-            android:textSize="25sp"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Last 15 min Reading"
+                    android:text="Last 15 min Reading(kWh)"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp" />
 
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Last 15 min usage"
+                    android:text="Last 15 min usage(kWh)"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp" />
 
@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="OVERVIEW FOR THIS MONTH:"
+                    android:text="OVERVIEW OF USAGE"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -168,7 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Usage in last date :"
+                    android:text="Usage in last date (kWh):"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp" />
 
@@ -224,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Last Time Stamp :"
+                    android:text="Last Read @:"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -243,6 +243,7 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp"
                     android:textStyle="bold" />
+
             </TableRow>
 
         </TableLayout>

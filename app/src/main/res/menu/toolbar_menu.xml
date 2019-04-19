@@ -11,6 +11,14 @@
         />
 
     <item
+        android:id="@+id/refresh"
+        android:title="Refresh"
+        android:icon="@drawable/ic_refresh_yellow"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        />
+
+    <item
         android:title="Logout"
         android:id="@+id/logout_tool"
         android:orderInCategory="100"

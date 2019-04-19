@@ -23,6 +23,7 @@
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".dashboard.DashboardActivity" />
         <activity android:name=".independent.ProfileActivity" />
+        <activity android:name=".login.RegistrationActivity"></activity>
     </application>
 
 </manifest>

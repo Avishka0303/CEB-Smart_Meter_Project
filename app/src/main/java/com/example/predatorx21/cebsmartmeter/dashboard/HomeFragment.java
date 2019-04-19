@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment {
         DecimalFormat decimalFormat=new DecimalFormat("#.###");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
-        lastMonthUsageView.setText(decimalFormat.format(usage));
+        lastMonthUsageView.setText(decimalFormat.format(usage)+" kWh");
 
     }
 
@@ -125,8 +125,7 @@ public class HomeFragment extends Fragment {
         DecimalFormat decimalFormat=new DecimalFormat("#.###");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
-        lastDayUsageView.setText(decimalFormat.format(usage));
-
+        lastDayUsageView.setText(decimalFormat.format(usage)+" kWh");
     }
 
     private void setUsageDetails() {
@@ -140,12 +139,9 @@ public class HomeFragment extends Fragment {
         double usage=0;
 
         try{
-
             while(resultSet1.next() && i!=2){
-
                 lastTimeStamp[i]=resultSet1.getString("TIME");
                 readings[i++]=resultSet1.getDouble("kWh");
-
             }
         }catch (Exception e){
 
@@ -158,8 +154,8 @@ public class HomeFragment extends Fragment {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         timeStampView.setText(lastTimeStamp[0]);
-        last15minView.setText(readings[0]+"");
-        last15minUsageView.setText(decimalFormat.format(usage)+"");
+        last15minView.setText(readings[0]+" kWh");
+        last15minUsageView.setText(decimalFormat.format(usage)+" kWh");
 
     }
 
