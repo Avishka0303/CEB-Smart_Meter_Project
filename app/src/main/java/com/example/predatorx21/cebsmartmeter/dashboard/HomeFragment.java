@@ -1,6 +1,7 @@
 package com.example.predatorx21.cebsmartmeter.dashboard;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,15 +12,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.db.DB;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -29,6 +37,7 @@ public class HomeFragment extends Fragment {
     private TextView last15minUsageView;
     private TextView lastDayUsageView;
     private TextView lastMonthUsageView;
+    private PieChart pie_threshold;
 
     private boolean PowerStatus=false;
 
@@ -46,19 +55,19 @@ public class HomeFragment extends Fragment {
 
         powerButton=(Button)getView().findViewById(R.id.power_button);
         timeStampView=(TextView) getView().findViewById(R.id.last_time_stamp);
-        last15minView=(TextView) getView().findViewById(R.id.last_15min_read);
-        last15minUsageView=(TextView) getView().findViewById(R.id.last_15min_usage);
         lastDayUsageView=(TextView) getView().findViewById(R.id.last_day_con);
         lastMonthUsageView=(TextView) getView().findViewById(R.id.last_month_consumption);
+        pie_threshold=(PieChart)getView().findViewById(R.id.threshold_pie_chart);
+        pie_threshold.setUsePercentValues(true);
 
         initializeHomeGUI();
-
         powerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 giveAlert();
             }
         });
+
     }
 
     private void initializeHomeGUI() {
@@ -71,9 +80,37 @@ public class HomeFragment extends Fragment {
             powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_theme,null));
             powerButton.setText("SYSTEM ONLINE");
         }
-        setUsageDetails();
-        setDailyUsageDetails();
+        //setUsageDetails();
+        //setDailyUsageDetails();
         setMonthlyUsageDetails();
+        setThresholdDetails();
+    }
+
+    private void setThresholdDetails() {
+
+        pie_threshold.getDescription().setEnabled(false);
+        pie_threshold.setExtraOffsets(5,10,5,5);
+        pie_threshold.setDragDecelerationEnabled(true);
+        pie_threshold.setDrawHoleEnabled(true);
+        pie_threshold.setHoleColor(getResources().getColor(R.color.colorLightGray,null));
+
+        ArrayList<PieEntry> yValues=new ArrayList<>();
+        yValues.add(new PieEntry(25,"Used"));
+        yValues.add(new PieEntry(75,"NotUsed"));
+
+        PieDataSet dataSet=new PieDataSet(yValues,"Threshold Usage");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+        PieData data=new PieData(dataSet);
+        data.setValueTextSize(10f);
+        data.setValueTextColor(Color.YELLOW);
+
+        pie_threshold.setData(data);
+
+
+
     }
 
     private void setMonthlyUsageDetails() {
@@ -101,6 +138,7 @@ public class HomeFragment extends Fragment {
         lastMonthUsageView.setText(decimalFormat.format(usage)+" kWh");
 
     }
+
 
     private void setDailyUsageDetails() {
 

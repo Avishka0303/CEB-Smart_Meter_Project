@@ -3,6 +3,7 @@
     <string name="nav_home">Home</string>
     <string name="nav_usage">Usage</string>
     <string name="nav_notice">Notice</string>
+    <string name="nav_control">Control</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="ok">ok</string>

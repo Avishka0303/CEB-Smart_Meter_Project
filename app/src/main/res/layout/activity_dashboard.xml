@@ -23,9 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
             app:itemBackground="@color/colorPrimary"
             app:itemIconTint="@color/bottom_navigator_color"
+            app:labelVisibilityMode="labeled"
             app:itemTextColor="@color/bottom_navigator_color"
             app:menu="@menu/bottom_navigation_menu" />
 

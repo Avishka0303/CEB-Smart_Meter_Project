@@ -51,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity {
     private HomeFragment homeFragment;
     private NoticeFragment noticeFragment;
     private UsageFragment usageFragment;
+    private ControlFragment controlFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class DashboardActivity extends AppCompatActivity {
         homeFragment=new HomeFragment();
         noticeFragment=new NoticeFragment();
         usageFragment=new UsageFragment();
+        controlFragment=new ControlFragment();
 
         //set toolbar. and initial settings.
         setToolBar(toolbar,"");
@@ -104,6 +106,9 @@ public class DashboardActivity extends AppCompatActivity {
                     case R.id.nav_usage:
                         setFragment(usageFragment);
                         navigationView.setCheckedItem(R.id.nd_usage);
+                        return true;
+                    case R.id.nav_control:
+                        setFragment(controlFragment);
                         return true;
                     default:
                         return false;
