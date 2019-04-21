@@ -31,7 +31,7 @@ public class DB {
     }
 
     public static boolean updateDB(String updateQuery){
-        boolean flag=false;
+        boolean flag=true;
         if(connection==null){
             createNewConnection();
         }
