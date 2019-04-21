@@ -160,6 +160,8 @@ public class ControlFragment extends Fragment {
                     typeList.setSelection(getPosition(resultSet.getString("ThresholdType")));
                     double charges[]=ConsumptionCharge.UsageInCharge(Double.parseDouble(resultSet.getString("ThresholdValue")));
                     charge.setText(charges[2]+"");
+                    if(resultSet.getString("ThresholdNotifi").equals("1"))
+                        notification_sw.setChecked(true);
                 }
             }
         } catch (SQLException e) {

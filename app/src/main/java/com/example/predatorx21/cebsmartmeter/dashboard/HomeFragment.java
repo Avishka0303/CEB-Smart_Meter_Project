@@ -15,11 +15,12 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.db.DB;
@@ -27,6 +28,7 @@ import com.example.predatorx21.cebsmartmeter.utilities.ThresholdSetup;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -43,6 +45,8 @@ import static android.support.v4.content.ContextCompat.getSystemService;
 public class HomeFragment extends Fragment {
 
     private static final String CHANNEL1_ID="channel1";
+    private String centerString;
+
 
     private Button powerButton;
     private TextView last15minView;
@@ -78,7 +82,6 @@ public class HomeFragment extends Fragment {
                 giveAlert();
             }
         });
-
     }
 
     private void initializeHomeGUI() {
@@ -101,50 +104,63 @@ public class HomeFragment extends Fragment {
 
     private void setThresholdDetails() {
 
-        setupPieChartForThreshold();
+        DecimalFormat decimalFormat=new DecimalFormat("#.###");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         ArrayList<PieEntry> yValues=new ArrayList<>();
-
         ThresholdSetup thresholdSetup=new ThresholdSetup();
-        double usedUnits[]=thresholdSetup.getThresholdDetails();
 
-        if (usedUnits[0]>=100){
-            yValues.add(new PieEntry(100f,"Used"));
-            if(thresholdSetup.getThresholdNotification().equals("1"))
-                showThresholdNotification(usedUnits[3]);
+        if(thresholdSetup.getThresholdStatus().equals("1")){
+            double usedUnits[]=thresholdSetup.getThresholdDetails();
+            if (usedUnits[0]>=100){
+                yValues.add(new PieEntry(100f,"Used %"));
+                if(thresholdSetup.getThresholdNotification().equals("1"))
+                    showThresholdNotification(usedUnits[3]);
+            }else{
+                yValues.add(new PieEntry((float) usedUnits[0],"Used %"));
+                yValues.add(new PieEntry((float) usedUnits[1],"NotUsed %"));
+            }
+            centerString=thresholdSetup.getThresholdType().toUpperCase()+ " LIMIT ACTIVATED\n\nused units : "+decimalFormat.format(usedUnits[2])+" kWh\nremaining units : "+decimalFormat.format(usedUnits[3])+" kWh";
         }else{
-            yValues.add(new PieEntry((float) usedUnits[0],"Used"));
-            yValues.add(new PieEntry((float) usedUnits[1],"NotUsed"));
+            yValues.add(new PieEntry(100,"Not limited"));
+            centerString="NO ANY LIMIT ACTIVATED\nGO TO CONTROL";
         }
 
+        setupPieChartForThreshold();
         PieDataSet dataSet=new PieDataSet(yValues,"Threshold Usage");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
+
+        int colors[]=new int[2];
+        colors[0]=getResources().getColor(R.color.colorPrimary,null);
+        colors[1]=getResources().getColor(R.color.colorYellow,null);
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
         PieData data=new PieData(dataSet);
-        data.setValueTextSize(10f);
+        data.setValueTextSize(20f);
         data.setValueTextColor(Color.YELLOW);
 
         pie_threshold.setData(data);
-
     }
 
-
     private void setupPieChartForThreshold() {
+
         pie_threshold.getDescription().setEnabled(false);
-        pie_threshold.setExtraOffsets(5,10,5,5);
         pie_threshold.setDragDecelerationEnabled(true);
 
         pie_threshold.setDrawHoleEnabled(true);
-        pie_threshold.setHoleColor(getResources().getColor(R.color.button_green,null));
-        pie_threshold.setTransparentCircleRadius(60f);
+        pie_threshold.setHoleColor(getResources().getColor(R.color.colorWhite,null));
+        pie_threshold.setTransparentCircleRadius(80f);
+        pie_threshold.setHoleRadius(70f);
 
-        pie_threshold.setCenterText("System online");
-        pie_threshold.setCenterTextSize(25f);
-        pie_threshold.setCenterTextColor(Color.WHITE);
+        pie_threshold.setCenterText(centerString);
+        pie_threshold.setCenterTextSize(15f);
+        pie_threshold.setCenterTextColor(getResources().getColor(R.color.colorPrimary,null));
 
         pie_threshold.animateY(1500,Easing.EaseInOutCubic);
+
+        Legend legend=pie_threshold.getLegend();
+        legend.setEnabled(false);
     }
 
     private void setMonthlyUsageDetails() {
@@ -200,35 +216,6 @@ public class HomeFragment extends Fragment {
         lastDayUsageView.setText(decimalFormat.format(usage)+" kWh");
     }
 
-    private void setUsageDetails() {
-
-        String query1="SELECT * FROM [MeterReading] WHERE MSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'  ORDER BY [TIME] DESC ";
-        ResultSet resultSet1=DB.searchDB(query1);
-
-        int i=0;
-        String lastTimeStamp[]=new String[2];
-        Double readings[]=new Double[2];
-        double usage=0;
-
-        try{
-            while(resultSet1.next() && i!=2){
-                lastTimeStamp[i]=resultSet1.getString("TIME");
-                readings[i++]=resultSet1.getDouble("kWh");
-            }
-        }catch (Exception e){
-
-            Log.e("Us",e.getMessage());
-
-        }
-
-        usage=readings[0]-readings[1];
-        DecimalFormat decimalFormat=new DecimalFormat("#.###");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
-
-        last15minView.setText(readings[0]+" kWh");
-        last15minUsageView.setText(decimalFormat.format(usage)+" kWh");
-
-    }
 
     private boolean checkPower() {
         boolean flag=false;

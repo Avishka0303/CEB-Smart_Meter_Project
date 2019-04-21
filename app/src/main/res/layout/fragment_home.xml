@@ -13,10 +13,14 @@
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/threshold_pie_chart"
-            android:layout_width="291dp"
-            android:layout_height="259dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginStart="1dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="2dp"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -24,8 +28,8 @@
 
         <Button
             android:id="@+id/power_button"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="67dp"
+            android:layout_height="67dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
@@ -34,7 +38,7 @@
             android:textColor="@color/colorWhite"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.975"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,11 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
 
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="70dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/table_bg"
             android:outlineSpotShadowColor="@color/blueGray"
-            android:padding="10dp"
+            android:padding="8dp"
 
             android:stretchColumns="1"
 
@@ -80,7 +84,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="Last Month Consumption(kWh) :"
                     android:textColor="@color/colorYellow"
                     android:textSize="15sp" />
@@ -89,9 +93,10 @@
                     android:id="@+id/last_month_consumption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
+                    android:background="@drawable/text_view_bg"
                     android:textColor="@color/colorYellow"
                     android:textSize="15sp" />
             </TableRow>
@@ -103,7 +108,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="Usage in last date (kWh):"
                     android:textColor="@color/colorYellow"
                     android:textSize="15sp" />
@@ -112,7 +117,7 @@
                     android:id="@+id/last_day_con"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
                     android:textColor="@color/colorYellow"
@@ -126,7 +131,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="Amount upto now (Rs):"
                     android:textColor="@color/colorYellow"
                     android:textSize="15sp" />
@@ -134,7 +139,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
                     android:textColor="@color/colorYellow"

@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@drawable/yellow_electricity"
+        android:background="@color/colorYellow"
         app:itemTextColor="@color/coalEnd"
         app:menu="@menu/navigation_drawer_menu"
         app:headerLayout="@layout/nav_drawer_header"
