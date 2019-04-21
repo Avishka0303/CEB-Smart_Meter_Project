@@ -1,11 +1,17 @@
 package com.example.predatorx21.cebsmartmeter.dashboard;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +23,10 @@ import android.widget.TextView;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.db.DB;
+import com.example.predatorx21.cebsmartmeter.utilities.ThresholdSetup;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -29,10 +38,13 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import static android.support.v4.content.ContextCompat.getSystemService;
+
 public class HomeFragment extends Fragment {
 
+    private static final String CHANNEL1_ID="channel1";
+
     private Button powerButton;
-    private TextView timeStampView;
     private TextView last15minView;
     private TextView last15minUsageView;
     private TextView lastDayUsageView;
@@ -54,7 +66,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         powerButton=(Button)getView().findViewById(R.id.power_button);
-        timeStampView=(TextView) getView().findViewById(R.id.last_time_stamp);
         lastDayUsageView=(TextView) getView().findViewById(R.id.last_day_con);
         lastMonthUsageView=(TextView) getView().findViewById(R.id.last_month_consumption);
         pie_threshold=(PieChart)getView().findViewById(R.id.threshold_pie_chart);
@@ -80,23 +91,31 @@ public class HomeFragment extends Fragment {
             powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_theme,null));
             powerButton.setText("SYSTEM ONLINE");
         }
+
         //setUsageDetails();
         //setDailyUsageDetails();
         setMonthlyUsageDetails();
         setThresholdDetails();
+
     }
 
     private void setThresholdDetails() {
 
-        pie_threshold.getDescription().setEnabled(false);
-        pie_threshold.setExtraOffsets(5,10,5,5);
-        pie_threshold.setDragDecelerationEnabled(true);
-        pie_threshold.setDrawHoleEnabled(true);
-        pie_threshold.setHoleColor(getResources().getColor(R.color.colorLightGray,null));
+        setupPieChartForThreshold();
 
         ArrayList<PieEntry> yValues=new ArrayList<>();
-        yValues.add(new PieEntry(25,"Used"));
-        yValues.add(new PieEntry(75,"NotUsed"));
+
+        ThresholdSetup thresholdSetup=new ThresholdSetup();
+        double usedUnits[]=thresholdSetup.getThresholdDetails();
+
+        if (usedUnits[0]>=100){
+            yValues.add(new PieEntry(100f,"Used"));
+            if(thresholdSetup.getThresholdNotification().equals("1"))
+                showThresholdNotification(usedUnits[3]);
+        }else{
+            yValues.add(new PieEntry((float) usedUnits[0],"Used"));
+            yValues.add(new PieEntry((float) usedUnits[1],"NotUsed"));
+        }
 
         PieDataSet dataSet=new PieDataSet(yValues,"Threshold Usage");
         dataSet.setSliceSpace(3f);
@@ -109,8 +128,23 @@ public class HomeFragment extends Fragment {
 
         pie_threshold.setData(data);
 
+    }
 
 
+    private void setupPieChartForThreshold() {
+        pie_threshold.getDescription().setEnabled(false);
+        pie_threshold.setExtraOffsets(5,10,5,5);
+        pie_threshold.setDragDecelerationEnabled(true);
+
+        pie_threshold.setDrawHoleEnabled(true);
+        pie_threshold.setHoleColor(getResources().getColor(R.color.button_green,null));
+        pie_threshold.setTransparentCircleRadius(60f);
+
+        pie_threshold.setCenterText("System online");
+        pie_threshold.setCenterTextSize(25f);
+        pie_threshold.setCenterTextColor(Color.WHITE);
+
+        pie_threshold.animateY(1500,Easing.EaseInOutCubic);
     }
 
     private void setMonthlyUsageDetails() {
@@ -191,7 +225,6 @@ public class HomeFragment extends Fragment {
         DecimalFormat decimalFormat=new DecimalFormat("#.###");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
-        timeStampView.setText(lastTimeStamp[0]);
         last15minView.setText(readings[0]+" kWh");
         last15minUsageView.setText(decimalFormat.format(usage)+" kWh");
 
@@ -218,6 +251,20 @@ public class HomeFragment extends Fragment {
         return flag;
     }
 
+    private void setSystemToggle() {
+        int status=1;
+        if(PowerStatus){
+            PowerStatus=false;
+            status=0;
+        }else{
+            PowerStatus=true;
+            status=1;
+        }
+        String query="UPDATE Meter SET RelayStatus='"+status+"' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
+        DB.updateDB(query);
+        initializeHomeGUI();
+    }
+
     private void giveAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (PowerStatus)
@@ -239,17 +286,28 @@ public class HomeFragment extends Fragment {
         dialog.show();
     }
 
-    private void setSystemToggle() {
-        int status=1;
-        if(PowerStatus){
-            PowerStatus=false;
-            status=0;
-        }else{
-            PowerStatus=true;
-            status=1;
+    private void showThresholdNotification(double overUsage) {
+        //create notification channel
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            NotificationChannel channel=new NotificationChannel(CHANNEL1_ID,"Channel 1",NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Overusage Warning");
+            NotificationManager manager=getSystemService(getContext(),NotificationManager.class);
+            manager.createNotificationChannel(channel);
         }
-        String query="UPDATE Meter SET RelayStatus='"+status+"' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-        DB.updateDB(query);
-        initializeHomeGUI();
+
+        DecimalFormat decimalFormat=new DecimalFormat("#.###");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(getContext(),CHANNEL1_ID)
+                .setSmallIcon(R.drawable.ic_warning)
+                .setContentTitle("Overusage Warning")
+                .setColorized(true)
+                .setColor(Color.RED)
+                .setLights(Color.WHITE,1000,1000)
+                .setContentText("You have overusage of "+decimalFormat.format(-overUsage)+" kWh ")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManager=NotificationManagerCompat.from(getContext());
+        notificationManager.notify(1,builder.build());
+
     }
 }
