@@ -12,6 +12,17 @@
 
     </style>
 
+    <style name="SwitchCompactStyle">
+        <item name="android:thumb">@drawable/ic_notifications</item>
+        <item name="android:thumbTint">@color/switch_color</item>
+        <item name="android:trackTint">@color/switch_color</item>
+    </style>
+
+    <style name="SwitchCompactStyleRegular">
+        <item name="android:thumbTint">@color/switch_color</item>
+        <item name="android:trackTint">@color/switch_color</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 

@@ -57,8 +57,13 @@ public class ControlFragment extends Fragment {
 
         setupSpinnerTypeList();
         initializeDetails();
+        setTextFieldActionListeners();
+        setSwitchActionListeners();
+        setButtonActionListeners();
+    }
 
-
+    //--------------------------------------------------------------------------UPDATE BUTTON -----------------------------------------------------------------------------------
+    private void setButtonActionListeners() {
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +83,59 @@ public class ControlFragment extends Fragment {
                 }
             }
         });
+    }
 
+    //--------------------------------------------------------------------------SWITCHES ACTIONS----------------------------------------------------------------------------------
+    private void setSwitchActionListeners() {
+        threshold_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    String query="UPDATE Meter SET ThresholdStatus='1' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
+                    if(!DB.updateDB(query)){
+                        Toast.makeText(getContext(),"Power limit On",Toast.LENGTH_SHORT).show();
+                        threshold_sw.setText("on");
+                    }else{
+                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    String query="UPDATE Meter SET ThresholdStatus='0' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
+                    if(!DB.updateDB(query)){
+                        Toast.makeText(getContext(),"Power limit off",Toast.LENGTH_SHORT).show();
+                        threshold_sw.setText("off");
+                    }else{
+                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        notification_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    String query="UPDATE Meter SET ThresholdNotifi='1' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
+                    if(!DB.updateDB(query)){
+                        threshold_sw.setText("on");
+                        Toast.makeText(getContext(),"Notification on",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    String query="UPDATE Meter SET ThresholdNotifi='0' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
+                    if(!DB.updateDB(query)){
+                        threshold_sw.setText("off");
+                        Toast.makeText(getContext(),"Notification off",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+//------------------------------------------------------------------------------------TEXT FIELD LISTENERS-------------------------------------------------------------------------
+    private void setTextFieldActionListeners() {
         consumption.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -102,51 +159,9 @@ public class ControlFragment extends Fragment {
 
             }
         });
-
-        threshold_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    String query="UPDATE Meter SET ThresholdStatus='1' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-                    if(!DB.updateDB(query)){
-                        Toast.makeText(getContext(),"Power limit On",Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    String query="UPDATE Meter SET ThresholdStatus='0' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-                    if(!DB.updateDB(query)){
-                        Toast.makeText(getContext(),"Power limit off",Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-        notification_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    String query="UPDATE Meter SET ThresholdNotifi='1' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-                    if(!DB.updateDB(query)){
-                        Toast.makeText(getContext(),"Notification on",Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    String query="UPDATE Meter SET ThresholdNotifi='0' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-                    if(!DB.updateDB(query)){
-                        Toast.makeText(getContext(),"Notification off",Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getContext(),"not updated",Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
     }
 
+//--------------------------------------------------------------------------------------INITIALIZE GUI DETAILS----------------------------------------------------------------------
     private void initializeDetails() {
 
         String query="SELECT * FROM Meter WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGray"
     tools:context=".dashboard.ControlFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -20,9 +21,26 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="20dp"
             android:stretchColumns="1"
+            android:background="@drawable/table_bg"
+            android:padding="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Power Limit Detail"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -34,8 +52,8 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Limit Status :"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorYellow"
+                    android:textSize="18sp" />
 
                 <Switch
                     android:id="@+id/threshold_switch"
@@ -43,8 +61,10 @@
                     android:layout_height="wrap_content"
                     android:paddingRight="30dp"
                     android:text="on"
+                    style="@style/SwitchCompactStyleRegular"
                     android:textAlignment="textEnd"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorWhite"
                     android:thumbTextPadding="5dp" />
             </TableRow>
 
@@ -58,8 +78,8 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Limit type:"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorYellow"
+                    android:textSize="18sp" />
 
                 <Spinner
                     android:id="@+id/type_list"
@@ -81,7 +101,7 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="30dp"
             android:background="@color/colorYellow"
-            android:showDividers="middle"
+            android:divider="@color/colorWhite"
             android:stretchColumns="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -147,6 +167,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/table_bg"
+            android:padding="6dp"
             android:stretchColumns="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -163,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Notification Detail"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
 
             </TableRow>
@@ -178,16 +200,18 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Show notification :"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorYellow"
+                    android:textSize="18sp" />
 
                 <Switch
                     android:id="@+id/notification_switch"
+                    style="@style/SwitchCompactStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="30dp"
                     android:text="on"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorWhite"
                     android:textSize="20sp"
                     android:thumbTextPadding="5dp" />
 
