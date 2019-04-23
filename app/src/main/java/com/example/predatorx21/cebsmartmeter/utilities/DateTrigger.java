@@ -8,9 +8,13 @@ public class DateTrigger {
     private String time[];
     private String day;
     private String month;
+    private String shortMonth;
     private final String DAY[]={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private final String MONTH[]={"January","February","March","April","May","June","July","August","September","October","November","December"};
+    private final static String SHORTMONTH[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 
+    public DateTrigger() {
+    }
 
     public DateTrigger(String dateAndTime) {
         String s1[]=dateAndTime.split(" ");
@@ -49,4 +53,24 @@ public class DateTrigger {
         }
         return month;
     }
+
+    public String getShortMonth(String date) {
+        switch (Integer.parseInt(date)){
+            case 1:return SHORTMONTH[0];
+            case 2:return SHORTMONTH[1];
+            case 3:return SHORTMONTH[2];
+            case 4:return SHORTMONTH[3];
+            case 5:return SHORTMONTH[4];
+            case 6:return SHORTMONTH[5];
+            case 7:return SHORTMONTH[6];
+            case 8:return SHORTMONTH[7];
+            case 9:return SHORTMONTH[8];
+            case 10:return SHORTMONTH[9];
+            case 11:return SHORTMONTH[10];
+            case 12:return SHORTMONTH[11];
+        }
+        return shortMonth;
+    }
+
+
 }

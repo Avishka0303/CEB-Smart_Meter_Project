@@ -5,93 +5,316 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ScrollView;
 
 import com.example.predatorx21.cebsmartmeter.R;
-import com.example.predatorx21.cebsmartmeter.db.DB;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.example.predatorx21.cebsmartmeter.utilities.GraphData;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.math.RoundingMode;
-import java.sql.ResultSet;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsageFragment extends Fragment {
 
-    private GraphView graphView;
-    private TextView startTime;
-    private TextView endTime;
+    private LineChart unitsUsage;
+    private HorizontalBarChart chargeChart;
+    private GraphData graphData;
+    private Button dailyBtn;
+    private Button monthlyBtn;
+    private Button weeklyBtn;
+    private Button scrollBottom;
+    private ScrollView scrollView;
 
+    private String CURRENT_GRAPH="DAILY";
 
     public UsageFragment() {
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_usage, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        graphView=(GraphView)getView().findViewById(R.id.min15graph);
-        startTime=(TextView)getView().findViewById(R.id.start_time);
-        endTime=(TextView)getView().findViewById(R.id.end_time);
-        plot15minGraph();
+
+        //initialize the realtime chart.
+        unitsUsage=(LineChart)getView().findViewById(R.id.realTime_chart);
+        chargeChart=(HorizontalBarChart)getView().findViewById(R.id.charg_chart);
+
+        dailyBtn=(Button)getView().findViewById(R.id.daily_btn);
+        monthlyBtn=(Button)getView().findViewById(R.id.monthly_btn);
+        weeklyBtn=(Button)getView().findViewById(R.id.week_btn);
+        scrollBottom=(Button)getView().findViewById(R.id.show_bottom_graph);
+
+        scrollView=(ScrollView)getView().findViewById(R.id.scroll_view);
+        scrollView.fullScroll(View.FOCUS_UP);
+
+        graphData=new GraphData();
+
+        //initialize button actions.
+        giveButtonActions();
+        plotDailyDetails();
+        plotDailyChargesDetails();
+        setSelectedBtn(dailyBtn);
+        CURRENT_GRAPH="DAILY";
+
     }
 
-    private void plot15minGraph() {
+//--------------------------------------------------------------------------DAILY DETAILS--------------------------------------------------------------------------------------------------------
 
-        DataPoint dataPoint[]=new DataPoint[20];
+    private void plotDailyDetails() {
 
-        String query1="SELECT * FROM [MeterReading] WHERE MSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'  ORDER BY [TIME] DESC ";
-        ResultSet resultSet1=DB.searchDB(query1);
+        List<Entry> real_time_detail=graphData.getDailyUnits();
+        String[] months= reverse(graphData.getxDLabels(),graphData.getxDLabels().length);
 
-        int i=0;
-        String lastTimeStamp[]=new String[20];
-        Double readings[]=new Double[20];
-        double usage[]=new double[20];
+        LineDataSet lineDataSet=new LineDataSet(real_time_detail,"Daily Usage ( kWh )");
+        lineDataSet.setDrawFilled(true);
+        lineDataSet.setValueTextSize(5f);
+        lineDataSet.setCircleRadius(5f);
+        lineDataSet.setCircleColor(getResources().getColor(R.color.colorBrown1,null));
+        lineDataSet.setColor(getResources().getColor(R.color.colorBlue,null));
+        lineDataSet.setLineWidth(3f);
 
-        try{
-            while(resultSet1.next() && i!=20){
-                lastTimeStamp[i]=resultSet1.getString("TIME");
-                readings[i]=resultSet1.getDouble("kWh");
-                if(i>1)
-                    usage[i]=readings[i-1]-readings[i];
-                dataPoint[i]=new DataPoint(i,usage[i]);
-                i++;
+        //set data for graph.
+        List<ILineDataSet> dataSets=new ArrayList<ILineDataSet>();
+        dataSets.add(lineDataSet);
+        LineData data=new LineData(dataSets);
+
+        //axises
+        XAxis xAxis=unitsUsage.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(months));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(300f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
+
+
+        //supply initialize settings for graph.
+        // KWH GRAPH
+        YAxis rightYAxis=unitsUsage.getAxisRight();
+        YAxis leftYAxis=unitsUsage.getAxisLeft();
+        leftYAxis.setAxisLineWidth(1.5f);
+        leftYAxis.setTextSize(15);
+        rightYAxis.setEnabled(false);
+        unitsUsage.animateY(1500,Easing.EaseInOutSine);
+
+        unitsUsage.setData(data);
+        unitsUsage.invalidate();
+    }
+
+//==========================================================================DAILY CHARGES===============================================================================================
+    private void plotDailyChargesDetails() {
+
+        //GET THE DATA FOR PLOT THE GRAPH
+        ArrayList<BarEntry> dailyEntries=graphData.getDailyCharges();
+        String[] months= reverse(graphData.getxDLabels(),graphData.getxDLabels().length);
+
+        //ARRANGE THE DATA SET AND GIVE PROPERTIES.
+        BarDataSet barDataSet=new BarDataSet(dailyEntries,"Daily charges (Rs)");
+        barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+        //cancel the VISIBILITY of the right side axis.
+        YAxis rightYAxis=chargeChart.getAxisRight();
+        rightYAxis.setEnabled(false);
+
+        //SET ENABLE THE LEFT SIDE AXIS AND SET THE LINE WIDTH.
+        YAxis leftYAxis=chargeChart.getAxisLeft();
+        leftYAxis.setEnabled(true);
+        leftYAxis.setAxisLineWidth(1.5f);
+
+        //SET THE X- AXIS PROPERTIES. [ GRANUALITY ] [ POSITION ] [ LINE WIDTH]
+        XAxis xAxis=chargeChart.getXAxis();
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisLineWidth(1.5f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(months));
+
+        //BAR DATA INSERT AND ANIMATION
+        BarData barData=new BarData(barDataSet);
+        chargeChart.animateY(1500,Easing.EaseInSine);
+        chargeChart.setData(barData);
+        chargeChart.invalidate();
+
+    }
+
+//-----------------------------------------------------------------------------DAILY DETAILS FINISH-------------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------MONTHLY DETAILS------------------------------------------------------------------------------------
+
+    private void plotMonthlyDetails() {
+
+        //GET THE DATA FOR THE MONTHLY DETAILS.
+        List<Entry> real_time_detail=graphData.getMonthlyUnits();
+        String[] months= reverse(graphData.getxMLabels(),graphData.getxMLabels().length);
+
+        //SETUP THE DATA SET AND THEIR PROPERTIES.
+        LineDataSet lineDataSet=new LineDataSet(real_time_detail,"Monthly Usage ( kWh )");
+        lineDataSet.setDrawFilled(true);
+        lineDataSet.setValueTextSize(5f);
+        lineDataSet.setCircleRadius(5f);
+        lineDataSet.setCircleColor(getResources().getColor(R.color.colorBrown1,null));
+        lineDataSet.setColor(getResources().getColor(R.color.colorBlue,null));
+        lineDataSet.setLineWidth(3f);
+
+        //SET THE DATA SET FOT LINE DATA
+        List<ILineDataSet> dataSets=new ArrayList<ILineDataSet>();
+        dataSets.add(lineDataSet);
+        LineData data=new LineData(dataSets);
+
+        //SETUP THE X-AXIS [ POSITION ] [ LINE WIDTH ] [ OFF THE VERTICAL GRID LINE]
+        XAxis xAxis=unitsUsage.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisLineWidth(1.5f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(months));
+        xAxis.setLabelRotationAngle(270f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1f);
+        xAxis.setTextSize(15f);
+        xAxis.setDrawGridLines(false);
+
+        //supply initialize settings for graph.
+        YAxis rightYAxis=unitsUsage.getAxisRight();
+        YAxis leftYAxis=unitsUsage.getAxisLeft();
+        leftYAxis.setAxisLineWidth(1.5f);
+        leftYAxis.setTextSize(15);
+        rightYAxis.setEnabled(false);
+        unitsUsage.animateY(1500,Easing.EaseInOutSine);
+
+        //SET THE GRAPH TO PLOT
+        unitsUsage.setData(data);
+        unitsUsage.invalidate();
+
+    }
+
+//==================================================================================MONTHLY CHARGES=====================================================================================
+
+    private void plotMonthlyChargesDetails() {
+
+        //GET THE MONTHLY CHARGES DATA SET
+        ArrayList<BarEntry> dailyEntries=graphData.getMonthlyCharges();
+        String[] months= reverse(graphData.getxMLabels(),graphData.getxMLabels().length);
+
+        //SET THE DATA SET AS BAR DATA SET AND ANIMATION
+        BarDataSet barDataSet=new BarDataSet(dailyEntries,"Monthly charges (Rs)");
+        barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        barDataSet.setValueTextSize(10);
+
+        //SET THE X- AXIS PROPERTIES. [ GRANUALITY ] [ POSITION ] [ LINE WIDTH]
+        XAxis xAxis=chargeChart.getXAxis();
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisLineWidth(1.5f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(months){
+            @Override
+            public String getFormattedValue(float value) {
+                return super.getFormattedValue(value);
             }
-        }catch (Exception e){
-            Log.e("Us",e.getMessage());
+        });
+        xAxis.setTextSize(15f);
+
+        BarData barData=new BarData(barDataSet);
+        chargeChart.animateY(1500,Easing.EaseInBounce);
+        chargeChart.setData(barData);
+        chargeChart.invalidate();
+
+    }
+
+//--------------------------------------------------------------------------------MONTHLY DETAILS FINISH---------------------------------------------------------------------------
+
+
+    private void giveButtonActions() {
+
+        dailyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedBtn(dailyBtn);
+                CURRENT_GRAPH="DAILY";
+                plotDailyDetails();
+                plotDailyChargesDetails();
+            }
+        });
+
+        monthlyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedBtn(monthlyBtn);
+                CURRENT_GRAPH="MONTHLY";
+                plotMonthlyDetails();
+                plotMonthlyChargesDetails();
+            }
+        });
+
+        weeklyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedBtn(weeklyBtn);
+                CURRENT_GRAPH="WEEKLY";
+            }
+        });
+
+        scrollBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+                if(CURRENT_GRAPH.equals("DAILY"))
+                    plotDailyChargesDetails();
+                else if(CURRENT_GRAPH.equals("MONTHLY"))
+                    plotMonthlyChargesDetails();
+
+            }
+        });
+    }
+
+    private void setSelectedBtn(Button btn) {
+        //reset all buttons
+
+        dailyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
+        dailyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+
+        monthlyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
+        monthlyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+
+        weeklyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
+        weeklyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+
+        btn.setBackground(getResources().getDrawable(R.drawable.selected_btn,null));
+        btn.setTextColor(getResources().getColor(R.color.colorBlue,null));
+        btn.setTextSize(15f);
+
+    }
+
+    //----------------------------------------------------------------------------------UTILITIES---------------------------------------------------------------------------------------
+    static String[] reverse(String a[], int n) {
+        String k, t;
+        int i;
+        for (i = 0; i < n / 2; i++) {
+            t = a[i];
+            a[i] = a[n - i - 1];
+            a[n - i - 1] = t;
         }
-
-        LineGraphSeries<DataPoint> series=new LineGraphSeries<>(dataPoint);
-
-        graphView.getViewport().setYAxisBoundsManual(false);
-
-        graphView.getViewport().setXAxisBoundsManual(false);
-        graphView.getViewport().setMaxX(20);
-        graphView.getViewport().setMinX(1);
-
-        // enable scaling and scrolling
-        graphView.getViewport().setScalable(true);
-        graphView.getViewport().setScalableY(true);
-        graphView.setTitle("15 min Readings (kWh)");
-        graphView.setTitleTextSize(70);
-        graphView.setTitleColor(getResources().getColor(R.color.colorWhite,null));
-        graphView.getLegendRenderer().setVisible(true);
-        graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-        graphView.addSeries(series);
-
-        startTime.setText(lastTimeStamp[19]);
-        endTime.setText(lastTimeStamp[0]);
+        return a;
     }
 }

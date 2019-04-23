@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
-                    android:text="Usage in last date (kWh):"
+                    android:text="Today usage upto now:"
                     android:textColor="@color/colorYellow"
                     android:textSize="15sp" />
 
@@ -137,12 +137,14 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/charge_up_now"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
                     android:textColor="@color/colorYellow"
+                    android:background="@drawable/text_view_bg_red"
                     android:textSize="15sp" />
             </TableRow>
         </TableLayout>

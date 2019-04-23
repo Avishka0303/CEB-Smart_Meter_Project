@@ -55,6 +55,9 @@ public class ControlFragment extends Fragment {
         notification_sw=(Switch)getView().findViewById(R.id.notification_switch);
         updatebtn=(Button)getView().findViewById(R.id.updateBtn);
 
+        setupSpinnerTypeList();
+        initializeDetails();
+
 
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +87,8 @@ public class ControlFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()!=0){
+
+                if(charSequence.length()!=0 && !charSequence.equals(".")){
                     double units=Double.parseDouble(consumption.getText().toString());
                     double charges[]=ConsumptionCharge.UsageInCharge(units);
                     charge.setText(charges[2]+"");
@@ -140,10 +144,6 @@ public class ControlFragment extends Fragment {
                 }
             }
         });
-
-
-        setupSpinnerTypeList();
-        initializeDetails();
 
     }
 

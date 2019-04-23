@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.db.DB;
+import com.example.predatorx21.cebsmartmeter.utilities.OverviewUsage;
 import com.example.predatorx21.cebsmartmeter.utilities.ThresholdSetup;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -49,8 +50,7 @@ public class HomeFragment extends Fragment {
 
 
     private Button powerButton;
-    private TextView last15minView;
-    private TextView last15minUsageView;
+    private TextView chargeUptoNow;
     private TextView lastDayUsageView;
     private TextView lastMonthUsageView;
     private PieChart pie_threshold;
@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         lastDayUsageView=(TextView) getView().findViewById(R.id.last_day_con);
         lastMonthUsageView=(TextView) getView().findViewById(R.id.last_month_consumption);
         pie_threshold=(PieChart)getView().findViewById(R.id.threshold_pie_chart);
-        pie_threshold.setUsePercentValues(true);
+        chargeUptoNow=(TextView)getView().findViewById(R.id.charge_up_now);
 
         initializeHomeGUI();
         powerButton.setOnClickListener(new View.OnClickListener() {
@@ -95,8 +95,8 @@ public class HomeFragment extends Fragment {
             powerButton.setText("SYSTEM ONLINE");
         }
 
-        //setUsageDetails();
-        //setDailyUsageDetails();
+        lastMonthUsageDetail();
+        setDailyUsageDetails();
         setMonthlyUsageDetails();
         setThresholdDetails();
 
@@ -107,23 +107,38 @@ public class HomeFragment extends Fragment {
         DecimalFormat decimalFormat=new DecimalFormat("#.###");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
+        //setup an arraylist for entries
         ArrayList<PieEntry> yValues=new ArrayList<>();
+
+        //create class for threshold setup
         ThresholdSetup thresholdSetup=new ThresholdSetup();
 
+        //check the threshold status.
         if(thresholdSetup.getThresholdStatus().equals("1")){
+
+            //get threshold details.
             double usedUnits[]=thresholdSetup.getThresholdDetails();
+
             if (usedUnits[0]>=100){
+
                 yValues.add(new PieEntry(100f,"Used %"));
                 if(thresholdSetup.getThresholdNotification().equals("1"))
                     showThresholdNotification(usedUnits[3]);
+                centerString=thresholdSetup.getThresholdType().toUpperCase()+ " LIMIT ACTIVATED\n\nused units : "+decimalFormat.format(usedUnits[2])+" kWh\nOver usage units : "+decimalFormat.format(-usedUnits[3])+" kWh";
+
             }else{
+
                 yValues.add(new PieEntry((float) usedUnits[0],"Used %"));
                 yValues.add(new PieEntry((float) usedUnits[1],"NotUsed %"));
+                centerString=thresholdSetup.getThresholdType().toUpperCase()+ " LIMIT ACTIVATED\n\nused units : "+decimalFormat.format(usedUnits[2])+" kWh\nremaining units : "+decimalFormat.format(usedUnits[3])+" kWh";
+
             }
-            centerString=thresholdSetup.getThresholdType().toUpperCase()+ " LIMIT ACTIVATED\n\nused units : "+decimalFormat.format(usedUnits[2])+" kWh\nremaining units : "+decimalFormat.format(usedUnits[3])+" kWh";
+
         }else{
+
             yValues.add(new PieEntry(100,"Not limited"));
             centerString="NO ANY LIMIT ACTIVATED\nGO TO CONTROL";
+
         }
 
         setupPieChartForThreshold();
@@ -145,6 +160,7 @@ public class HomeFragment extends Fragment {
 
     private void setupPieChartForThreshold() {
 
+        pie_threshold.setUsePercentValues(true);
         pie_threshold.getDescription().setEnabled(false);
         pie_threshold.setDragDecelerationEnabled(true);
 
@@ -163,59 +179,36 @@ public class HomeFragment extends Fragment {
         legend.setEnabled(false);
     }
 
+//---------------------------to set up the monthly details-----------------------------------------------------------------------------------
     private void setMonthlyUsageDetails() {
 
-        String query1="SELECT * FROM [MonthlyConsumptionValidateTable] WHERE MSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"' ORDER BY [MSerial] ASC,[Month] DESC ";
-        ResultSet resultSet1= DB.searchDB(query1);
-        String date[]=new String[2];
-        double consumption[]=new double[2];
-        int i=0;
-        double usage=0;
-
-        try {
-            while (resultSet1.next() && i!=2){
-                date[i]=resultSet1.getString("Timestamp");
-                consumption[i++]=resultSet1.getDouble("kWh");
-            }
-        }catch (Exception e){
-            Log.e("us",e.getMessage());
-        }
-
-        usage=consumption[0]-consumption[1];
-        DecimalFormat decimalFormat=new DecimalFormat("#.###");
+        double monthUsage[]=new OverviewUsage("Monthly").getMonthlyDetail();
+        DecimalFormat decimalFormat=new DecimalFormat("#.##");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
-
-        lastMonthUsageView.setText(decimalFormat.format(usage)+" kWh");
+        chargeUptoNow.setText(decimalFormat.format(monthUsage[1])+" Rs");
 
     }
 
-
+//-------------------------------------- daily usage details.---------------------------------------------------------------------------------
     private void setDailyUsageDetails() {
 
-        //daily usage
-        String query1="SELECT * FROM [DailyEnergyConsumption] WHERE MSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"' ORDER BY [Date] DESC";
-        ResultSet resultSet1= DB.searchDB(query1);
-        String date[]=new String[2];
-        double consumption[]=new double[2];
-        int i=0;
-        double usage=0;
-
-        try {
-            while (resultSet1.next() && i!=2){
-                date[i]=resultSet1.getString("Date");
-                consumption[i++]=resultSet1.getDouble("Consumption");
-            }
-        }catch (Exception e){
-            Log.e("us",e.getMessage());
-        }
-
-        usage=consumption[0]-consumption[1];
-        DecimalFormat decimalFormat=new DecimalFormat("#.###");
+        double dailyUsage[]=new OverviewUsage("Daily").getDailyDetail();
+        DecimalFormat decimalFormat=new DecimalFormat("#.##");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        lastDayUsageView.setText(decimalFormat.format(dailyUsage[1])+" Rs");
 
-        lastDayUsageView.setText(decimalFormat.format(usage)+" kWh");
     }
 
+//--------------------------------------last month usage details-------------------------------------------------------------------------------
+
+    private void lastMonthUsageDetail() {
+        double monthUsage=new OverviewUsage("mon").getLastMonthConsumption();
+        DecimalFormat decimalFormat=new DecimalFormat("#.##");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        lastMonthUsageView.setText(decimalFormat.format(monthUsage)+" kWh");
+    }
+
+//----------------------------------------------check power-------------------------------------------------------------------------------------
 
     private boolean checkPower() {
         boolean flag=false;
@@ -238,6 +231,7 @@ public class HomeFragment extends Fragment {
         return flag;
     }
 
+    //-----------------------------------------------------------set system power toggle--------------------------------------------------------------
     private void setSystemToggle() {
         int status=1;
         if(PowerStatus){
@@ -252,6 +246,7 @@ public class HomeFragment extends Fragment {
         initializeHomeGUI();
     }
 
+    //------------------------------------give alert for power toggle------------------------
     private void giveAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (PowerStatus)
@@ -274,12 +269,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void showThresholdNotification(double overUsage) {
+
         //create notification channel
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+
             NotificationChannel channel=new NotificationChannel(CHANNEL1_ID,"Channel 1",NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("Overusage Warning");
             NotificationManager manager=getSystemService(getContext(),NotificationManager.class);
             manager.createNotificationChannel(channel);
+
         }
 
         DecimalFormat decimalFormat=new DecimalFormat("#.###");
