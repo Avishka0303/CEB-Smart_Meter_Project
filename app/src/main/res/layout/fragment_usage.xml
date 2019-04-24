@@ -100,6 +100,8 @@
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorBlue"
+                    android:textColor="@color/colorWhite"
                     android:text="Units ( kWh )"
                     android:textAlignment="center"
                     android:textSize="20sp" />
@@ -123,6 +125,7 @@
                     android:layout_height="wrap_content"
                     android:text="Charges ( Rs )"
                     android:textSize="15sp"
+                    android:textColor="@color/colorWhite"
                     android:drawableLeft="@drawable/ic_keyboard_down"
                     android:drawableRight="@drawable/ic_keyboard_down"
                     android:background="@color/colorBlue"/>

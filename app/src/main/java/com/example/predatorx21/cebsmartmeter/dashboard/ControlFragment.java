@@ -54,6 +54,7 @@ public class ControlFragment extends Fragment {
         charge=(EditText)getView().findViewById(R.id.edit_charge);
         notification_sw=(Switch)getView().findViewById(R.id.notification_switch);
         updatebtn=(Button)getView().findViewById(R.id.updateBtn);
+        updatebtn.setEnabled(false);
 
         setupSpinnerTypeList();
         initializeDetails();
@@ -77,6 +78,7 @@ public class ControlFragment extends Fragment {
                 String query="UPDATE Meter SET ThresholdStatus='1',ThresholdValue='"+cons+"',ThresholdType='"+type+"',ThresholdNotifi='"+notification_status+"' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
                 if(!DB.updateDB(query)){
                     Toast.makeText(getContext(),"Successfully updated",Toast.LENGTH_SHORT).show();
+                    updatebtn.setEnabled(false);
                     threshold_sw.setChecked(true);
                 }else{
                     Toast.makeText(getContext(),"Update Failed",Toast.LENGTH_SHORT).show();
@@ -136,6 +138,7 @@ public class ControlFragment extends Fragment {
 
 //------------------------------------------------------------------------------------TEXT FIELD LISTENERS-------------------------------------------------------------------------
     private void setTextFieldActionListeners() {
+
         consumption.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -144,6 +147,8 @@ public class ControlFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                updatebtn.setEnabled(true);
 
                 if(charSequence.length()!=0 && !charSequence.equals(".")){
                     double units=Double.parseDouble(consumption.getText().toString());
