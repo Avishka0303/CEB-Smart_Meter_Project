@@ -19,16 +19,17 @@ public class SplashScreen extends AppCompatActivity {
 
     //initialize splash items
     private ImageView logo;
-    private static int SPLASH_TIME_OUT=100;
+    private static int SPLASH_TIME_OUT=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         logo=(ImageView) findViewById(R.id.splash_im_view);
 
         //initialize the animations
-        Animation animation=AnimationUtils.loadAnimation(this,R.anim.splashanimation);
+        Animation animation=AnimationUtils.loadAnimation(this,R.anim.slide);
         logo.startAnimation(animation);
 
         Connection connection=DB.createNewConnection();

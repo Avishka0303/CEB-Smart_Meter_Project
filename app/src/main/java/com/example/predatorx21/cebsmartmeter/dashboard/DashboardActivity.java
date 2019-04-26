@@ -1,10 +1,13 @@
 package com.example.predatorx21.cebsmartmeter.dashboard;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -12,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -140,9 +144,7 @@ public class DashboardActivity extends AppCompatActivity {
                     case R.id.nd_bill:
                         return true;
                     case R.id.nd_contact_info:
-                        Intent callIntent=new Intent(Intent.ACTION_DIAL);
-                        callIntent.setData(Uri.parse(Data.TEL_FOR_CEB));
-                        startActivity(callIntent);
+                        takeCall();
                         return true;
                     case R.id.nd_go_to_site:
                         Intent browserIntent=new Intent(Intent.ACTION_VIEW,Uri.parse(Data.URL_FOR_CEB_SITE));
@@ -155,6 +157,42 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    private void takeCall() {
+
+        String query="SELECT * FROM AspNetUsers WHERE UserName='"+ DashboardActivity.USER_TAG+"'";
+        ResultSet resultSet=DB.searchDB(query);
+        String location="",contactNo="";
+
+        try {
+            if(resultSet.next()){
+                Log.d("con","result set 1");
+                location=resultSet.getString("Location");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String query2="SELECT * FROM Contacts WHERE Location='"+location+"'";
+        ResultSet resultSet1=DB.searchDB(query2);
+
+        try {
+            if(resultSet1.next()){
+                Log.d("con","result set 2");
+                contactNo=resultSet1.getString("Number");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String number="tel:"+contactNo;
+        Intent callIntent=new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse(number));
+        if (ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(DashboardActivity.this,"Give Permission for Call",Toast.LENGTH_SHORT);
+            return;
+        }
+        startActivity(callIntent);
+    }
 
 
     private void setDashboardToOwner() {

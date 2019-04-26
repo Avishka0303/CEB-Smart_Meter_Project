@@ -18,7 +18,7 @@
             android:layout_marginStart="1dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="2dp"
-            android:elevation="2dp"
+            android:elevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.13"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,6 @@
             android:layout_marginTop="70dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/table_bg"
-            android:outlineSpotShadowColor="@color/blueGray"
             android:padding="8dp"
 
             android:stretchColumns="1"

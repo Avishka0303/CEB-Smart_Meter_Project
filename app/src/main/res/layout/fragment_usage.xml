@@ -51,7 +51,7 @@
                 android:layout_width="395dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
                 android:orientation="horizontal"
                 android:padding="3dp"
@@ -85,9 +85,10 @@
             </LinearLayout>
 
             <LinearLayout
+
                 android:id="@+id/linearLayout2"
-                android:layout_width="395dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
@@ -99,12 +100,13 @@
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:background="@color/colorBlue"
-                    android:textColor="@color/colorWhite"
-                    android:text="Units ( kWh )"
+                    android:text="UNITS ( kWh )"
                     android:textAlignment="center"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15sp" />
+
             </LinearLayout>
 
             <LinearLayout

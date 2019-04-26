@@ -105,6 +105,8 @@ public class UsageFragment extends Fragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setLabelRotationAngle(300f);
         xAxis.setGranularityEnabled(true);
+        xAxis.setAxisLineWidth(1.5f);
+        xAxis.setTextSize(12f);
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
 

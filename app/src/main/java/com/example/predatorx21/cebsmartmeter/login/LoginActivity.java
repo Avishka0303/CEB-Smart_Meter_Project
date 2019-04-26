@@ -1,6 +1,8 @@
 package com.example.predatorx21.cebsmartmeter.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText uname;
     private EditText accountno;
+    private Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,39 +33,82 @@ public class LoginActivity extends AppCompatActivity {
         uname=(EditText)findViewById(R.id.username);
         accountno=(EditText)findViewById(R.id.password);
 
-        checkConnection();
     }
 
-    private void checkConnection() {
-        Connection connection=DB.createNewConnection();
-        if(connection==null){
-            Toast.makeText(LoginActivity.this,"On the internet",Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(LoginActivity.this,"Database Connected",Toast.LENGTH_SHORT).show();
+    private boolean checkConnection() {
+
+        if(networkStatus()){
+
+            connection=DB.createNewConnection();
+
+            if(connection==null){
+
+                Toast.makeText(LoginActivity.this,"Cannot connect with Server",Toast.LENGTH_SHORT).show();
+                return false;
+
+            }else{
+
+                Toast.makeText(LoginActivity.this,"connection succesfull",Toast.LENGTH_SHORT).show();
+                return true;
+
+            }
+
+        }else {
+
+            Toast.makeText(LoginActivity.this,"Turn on data connection or WIFI",Toast.LENGTH_SHORT).show();
+            return false;
+
         }
+
     }
 
     public void loginToDashboard(View view){
 
-        String username=uname.getText().toString();
-        String acno=accountno.getText().toString();
+        if(checkConnection()){
 
-        String query="SELECT * FROM [AspNetUsers] WHERE UserName='"+username+"'";
-        ResultSet rs=DB.searchDB(query);
+            String username=uname.getText().toString();
+            String acno=accountno.getText().toString();
 
-        try {
-            if(rs.next()){
-                Intent intent=new Intent(LoginActivity.this,DashboardActivity.class);
-                startActivity(intent);
-                DashboardActivity.USER_TAG=username;
-                DashboardActivity.USER_ACCNO=acno;
-                finish();
-            }else{
-                Toast.makeText(LoginActivity.this,"Username or Password Incorrect",Toast.LENGTH_SHORT).show();
+            String query="SELECT * FROM [AspNetUsers] WHERE UserName='"+username+"'";
+            ResultSet rs=DB.searchDB(query);
+
+            try {
+                if(rs.next()){
+                    Intent intent=new Intent(LoginActivity.this,DashboardActivity.class);
+                    startActivity(intent);
+                    DashboardActivity.USER_TAG=username;
+                    DashboardActivity.USER_ACCNO=acno;
+                    finish();
+                }else{
+                    Toast.makeText(LoginActivity.this,"Username or Password Incorrect",Toast.LENGTH_SHORT).show();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Log.e("DBE",e.getMessage());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Log.e("DBE",e.getMessage());
+
+        }
+    }
+
+    //check the connection
+    public boolean networkStatus() {
+
+        final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final android.net.NetworkInfo wifi = connMgr.getActiveNetworkInfo();
+        final android.net.NetworkInfo mobile = connMgr.getActiveNetworkInfo();
+
+        if (wifi.isConnected()) {
+
+            return true;
+
+        } else if (mobile.isConnected()) {
+
+            return true;
+
+        } else {
+
+            return false;
+
         }
     }
 

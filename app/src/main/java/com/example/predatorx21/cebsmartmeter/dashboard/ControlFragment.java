@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -54,13 +55,13 @@ public class ControlFragment extends Fragment {
         charge=(EditText)getView().findViewById(R.id.edit_charge);
         notification_sw=(Switch)getView().findViewById(R.id.notification_switch);
         updatebtn=(Button)getView().findViewById(R.id.updateBtn);
-        updatebtn.setEnabled(false);
 
         setupSpinnerTypeList();
         initializeDetails();
         setTextFieldActionListeners();
         setSwitchActionListeners();
         setButtonActionListeners();
+
     }
 
     //--------------------------------------------------------------------------UPDATE BUTTON -----------------------------------------------------------------------------------
@@ -68,7 +69,6 @@ public class ControlFragment extends Fragment {
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("TE","update pressed");
                 String type=typeList.getSelectedItem().toString();
                 double cons=Double.parseDouble(consumption.getText().toString());
                 int notification_status=0;
@@ -78,13 +78,14 @@ public class ControlFragment extends Fragment {
                 String query="UPDATE Meter SET ThresholdStatus='1',ThresholdValue='"+cons+"',ThresholdType='"+type+"',ThresholdNotifi='"+notification_status+"' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
                 if(!DB.updateDB(query)){
                     Toast.makeText(getContext(),"Successfully updated",Toast.LENGTH_SHORT).show();
-                    updatebtn.setEnabled(false);
+                    updatebtn.setVisibility(View.INVISIBLE);
                     threshold_sw.setChecked(true);
                 }else{
                     Toast.makeText(getContext(),"Update Failed",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        updatebtn.setVisibility(View.INVISIBLE);
     }
 
     //--------------------------------------------------------------------------SWITCHES ACTIONS----------------------------------------------------------------------------------
@@ -148,7 +149,7 @@ public class ControlFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                updatebtn.setEnabled(true);
+                updatebtn.setVisibility(View.VISIBLE);
 
                 if(charSequence.length()!=0 && !charSequence.equals(".")){
                     double units=Double.parseDouble(consumption.getText().toString());
@@ -203,5 +204,17 @@ public class ControlFragment extends Fragment {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeList.setAdapter(dataAdapter);
+
+        typeList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updatebtn.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 }
