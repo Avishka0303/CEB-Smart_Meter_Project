@@ -271,4 +271,6 @@ public class DashboardActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.main_frame,fragment);
         fragmentTransaction.commit();
     }
+
+
 }

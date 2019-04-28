@@ -1,6 +1,5 @@
 package com.example.predatorx21.cebsmartmeter.dashboard;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,21 +59,28 @@ public class UsageFragment extends Fragment {
         unitsUsage=(LineChart)getView().findViewById(R.id.realTime_chart);
         chargeChart=(HorizontalBarChart)getView().findViewById(R.id.charg_chart);
 
+        //initialize buttons
         dailyBtn=(Button)getView().findViewById(R.id.daily_btn);
         monthlyBtn=(Button)getView().findViewById(R.id.monthly_btn);
         weeklyBtn=(Button)getView().findViewById(R.id.week_btn);
         scrollBottom=(Button)getView().findViewById(R.id.show_bottom_graph);
 
+        //initialize scroll view and focus up
         scrollView=(ScrollView)getView().findViewById(R.id.scroll_view);
         scrollView.fullScroll(View.FOCUS_UP);
 
+        //creating graph data .
         graphData=new GraphData();
 
         //initialize button actions.
-        giveButtonActions();
         plotDailyDetails();
         plotDailyChargesDetails();
+
+        //initialize button action listeners
+        giveButtonActions();
         setSelectedBtn(dailyBtn);
+
+        //give current graph as the graph
         CURRENT_GRAPH="DAILY";
 
     }
@@ -88,7 +94,7 @@ public class UsageFragment extends Fragment {
 
         LineDataSet lineDataSet=new LineDataSet(real_time_detail,"Daily Usage ( kWh )");
         lineDataSet.setDrawFilled(true);
-        lineDataSet.setValueTextSize(5f);
+        lineDataSet.setValueTextSize(15f);
         lineDataSet.setCircleRadius(5f);
         lineDataSet.setCircleColor(getResources().getColor(R.color.colorBrown1,null));
         lineDataSet.setColor(getResources().getColor(R.color.colorBlue,null));
@@ -122,6 +128,7 @@ public class UsageFragment extends Fragment {
 
         unitsUsage.setData(data);
         unitsUsage.invalidate();
+
     }
 
 //==========================================================================DAILY CHARGES===============================================================================================
@@ -133,6 +140,7 @@ public class UsageFragment extends Fragment {
 
         //ARRANGE THE DATA SET AND GIVE PROPERTIES.
         BarDataSet barDataSet=new BarDataSet(dailyEntries,"Daily charges (Rs)");
+        barDataSet.setValueTextSize(15f);
         barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
         //cancel the VISIBILITY of the right side axis.
@@ -155,6 +163,7 @@ public class UsageFragment extends Fragment {
         //BAR DATA INSERT AND ANIMATION
         BarData barData=new BarData(barDataSet);
         chargeChart.animateY(1500,Easing.EaseInSine);
+        chargeChart.setDrawValueAboveBar(true);
         chargeChart.setData(barData);
         chargeChart.invalidate();
 
@@ -246,69 +255,68 @@ public class UsageFragment extends Fragment {
 
 //--------------------------------------------------------------------------------MONTHLY DETAILS FINISH---------------------------------------------------------------------------
 
-
     private void giveButtonActions() {
 
         dailyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setSelectedBtn(dailyBtn);
-                CURRENT_GRAPH="DAILY";
-                plotDailyDetails();
-                plotDailyChargesDetails();
+            setSelectedBtn(dailyBtn);
+            CURRENT_GRAPH="DAILY";
+            plotDailyDetails();
+            plotDailyChargesDetails();
             }
         });
 
         monthlyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setSelectedBtn(monthlyBtn);
-                CURRENT_GRAPH="MONTHLY";
-                plotMonthlyDetails();
-                plotMonthlyChargesDetails();
+            setSelectedBtn(monthlyBtn);
+            CURRENT_GRAPH="MONTHLY";
+            plotMonthlyDetails();
+            plotMonthlyChargesDetails();
             }
         });
 
         weeklyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setSelectedBtn(weeklyBtn);
-                CURRENT_GRAPH="WEEKLY";
+            setSelectedBtn(weeklyBtn);
+            CURRENT_GRAPH="WEEKLY";
             }
         });
 
         scrollBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scrollView.fullScroll(View.FOCUS_DOWN);
-                if(CURRENT_GRAPH.equals("DAILY"))
-                    plotDailyChargesDetails();
-                else if(CURRENT_GRAPH.equals("MONTHLY"))
-                    plotMonthlyChargesDetails();
-
+            scrollView.fullScroll(View.FOCUS_DOWN);
+            if(CURRENT_GRAPH.equals("DAILY"))
+                plotDailyChargesDetails();
+            else if(CURRENT_GRAPH.equals("MONTHLY"))
+                plotMonthlyChargesDetails();
             }
         });
     }
 
+//---------------------------------------------------------------------------------------------------SET BUTTONS --------------------------------------------------------------------------
     private void setSelectedBtn(Button btn) {
         //reset all buttons
-
         dailyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        dailyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+        dailyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
 
         monthlyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        monthlyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+        monthlyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
 
         weeklyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        weeklyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
+        weeklyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
 
         btn.setBackground(getResources().getDrawable(R.drawable.selected_btn,null));
         btn.setTextColor(getResources().getColor(R.color.colorBlue,null));
         btn.setTextSize(15f);
-
     }
 
-    //----------------------------------------------------------------------------------UTILITIES---------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------UTILITIES---------------------------------------------------------------------------------------------
+
+    //reverse the string.
     static String[] reverse(String a[], int n) {
         String k, t;
         int i;

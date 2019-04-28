@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -48,14 +49,36 @@ public class HomeFragment extends Fragment {
     private static final String CHANNEL1_ID="channel1";
     private String centerString;
 
-
     private Button powerButton;
     private TextView chargeUptoNow;
     private TextView lastDayUsageView;
     private TextView lastMonthUsageView;
+    private TextView voltage,power;
     private PieChart pie_threshold;
 
     private boolean PowerStatus=false;
+
+    private DecimalFormat decimalFormat;
+
+
+    //runnable for check the power status.
+    Handler powerHandler=new Handler();
+    private Runnable checkPowerRunnable=new Runnable() {
+        @Override
+        public void run() {
+            initializePowerStatus();
+            powerHandler.postDelayed(checkPowerRunnable,5000);
+        }
+    };
+
+    Handler guiHandler=new Handler();
+    private Runnable guiUpdateRunnable=new Runnable() {
+        @Override
+        public void run() {
+            initializeHomeGUI();
+            guiHandler.postDelayed(guiUpdateRunnable,900000);
+        }
+    };
 
     public HomeFragment() {
 
@@ -74,8 +97,17 @@ public class HomeFragment extends Fragment {
         lastMonthUsageView=(TextView) getView().findViewById(R.id.last_month_consumption);
         pie_threshold=(PieChart)getView().findViewById(R.id.threshold_pie_chart);
         chargeUptoNow=(TextView)getView().findViewById(R.id.charge_up_now);
+        voltage=(TextView)getView().findViewById(R.id.voltage_txt);
+        power=(TextView)getView().findViewById(R.id.power_txt);
+
+        decimalFormat=new DecimalFormat("#.##");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         initializeHomeGUI();
+        initializePowerStatus();
+
+        powerHandler.post(checkPowerRunnable);
+        guiHandler.post(guiUpdateRunnable);
         powerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,8 +116,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void initializeHomeGUI() {
-        //check for the power status.
+    private void initializePowerStatus() {
         boolean currentStatus=checkPower();
         if(!currentStatus){
             powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_off,null));
@@ -94,18 +125,17 @@ public class HomeFragment extends Fragment {
             powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_theme,null));
             powerButton.setText("SYSTEM ONLINE");
         }
+    }
 
+    private void initializeHomeGUI() {
+        //check for the power status.
         lastMonthUsageDetail();
         setDailyUsageDetails();
         setMonthlyUsageDetails();
         setThresholdDetails();
-
     }
 
     private void setThresholdDetails() {
-
-        DecimalFormat decimalFormat=new DecimalFormat("#.###");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         //setup an arraylist for entries
         ArrayList<PieEntry> yValues=new ArrayList<>();
@@ -148,14 +178,14 @@ public class HomeFragment extends Fragment {
 
         int colors[]=new int[2];
         colors[0]=getResources().getColor(R.color.colorPrimary,null);
-        colors[1]=getResources().getColor(R.color.colorYellow,null);
+        colors[1]=getResources().getColor(R.color.colorBlackGray,null);
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
         PieData data=new PieData(dataSet);
         data.setValueTextSize(20f);
-        data.setValueTextColor(Color.YELLOW);
-
+        data.setValueTextColor(getResources().getColor(R.color.colorBlackGray,null));
         pie_threshold.setData(data);
+
     }
 
     private void setupPieChartForThreshold() {
@@ -166,7 +196,7 @@ public class HomeFragment extends Fragment {
 
         pie_threshold.setDrawHoleEnabled(true);
         pie_threshold.setHoleColor(getResources().getColor(R.color.colorWhite,null));
-        pie_threshold.setTransparentCircleRadius(80f);
+        pie_threshold.setTransparentCircleRadius(75f);
         pie_threshold.setHoleRadius(70f);
 
         pie_threshold.setCenterText(centerString);
@@ -181,30 +211,23 @@ public class HomeFragment extends Fragment {
 
 //---------------------------to set up the monthly details-----------------------------------------------------------------------------------
     private void setMonthlyUsageDetails() {
-
         double monthUsage[]=new OverviewUsage("Monthly").getMonthlyDetail();
-        DecimalFormat decimalFormat=new DecimalFormat("#.##");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
         chargeUptoNow.setText(decimalFormat.format(monthUsage[1])+" Rs");
-
     }
 
 //-------------------------------------- daily usage details.---------------------------------------------------------------------------------
     private void setDailyUsageDetails() {
-
-        double dailyUsage[]=new OverviewUsage("Daily").getDailyDetail();
-        DecimalFormat decimalFormat=new DecimalFormat("#.##");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        OverviewUsage ovu=new OverviewUsage("Daily");
+        double dailyUsage[]=ovu.getDailyDetail();
         lastDayUsageView.setText(decimalFormat.format(dailyUsage[1])+" Rs");
-
+        voltage.setText(ovu.getVoltage()+" V");
+        power.setText(ovu.getPower()+" W");
     }
 
 //--------------------------------------last month usage details-------------------------------------------------------------------------------
 
     private void lastMonthUsageDetail() {
         double monthUsage=new OverviewUsage("mon").getLastMonthConsumption();
-        DecimalFormat decimalFormat=new DecimalFormat("#.##");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
         lastMonthUsageView.setText(decimalFormat.format(monthUsage)+" kWh");
     }
 
@@ -294,5 +317,12 @@ public class HomeFragment extends Fragment {
         NotificationManagerCompat notificationManager=NotificationManagerCompat.from(getContext());
         notificationManager.notify(1,builder.build());
 
+    }
+
+    @Override
+    public void onDestroy() {
+        powerHandler.removeCallbacks(checkPowerRunnable);
+        guiHandler.removeCallbacks(guiUpdateRunnable);
+        super.onDestroy();
     }
 }

@@ -23,6 +23,7 @@
             android:stretchColumns="1"
             android:background="@drawable/table_bg"
             android:padding="6dp"
+            android:elevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -102,6 +103,7 @@
             android:layout_marginEnd="30dp"
             android:background="@color/colorYellow"
             android:divider="@color/colorWhite"
+            android:elevation="5dp"
             android:stretchColumns="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -169,6 +171,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/table_bg"
             android:padding="6dp"
+            android:elevation="5dp"
             android:stretchColumns="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

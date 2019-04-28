@@ -12,6 +12,7 @@ public class OverviewUsage {
     private double monthlyDetail[];
     private double dailyDetail[];
     private double lastMonthConsumption;
+    private String voltage,power;
 
     public OverviewUsage(String type) {
         if(type.equals("Daily"))
@@ -33,6 +34,10 @@ public class OverviewUsage {
     public double getLastMonthConsumption() {
         return lastMonthConsumption;
     }
+
+    public String getVoltage() { return voltage; }
+
+    public String getPower() { return power; }
 
     //------------------------------------------------------------------------custom methods-------------------------------------------------------
     private void setupMonthlyDetail() {
@@ -88,7 +93,11 @@ public class OverviewUsage {
             int i=0;
             while (resultSet.next()){
 
-                if(i==0) initialReading=Double.parseDouble(resultSet.getString("kWh"));
+                if(i==0){
+                    initialReading=Double.parseDouble(resultSet.getString("kWh"));
+                    voltage=resultSet.getString("V");
+                    power=resultSet.getString("w");
+                }
                 i++;
 
                 String date=resultSet.getString("TIME");

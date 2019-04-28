@@ -11,6 +11,8 @@
     <color name="colorYellow">#ffff1a</color>
     <color name="colorBlackGray">#494848</color>
     <color name="colorLightGray">#cce6ff</color>
+    <color name="colorPaleGreen">#ccffcc</color>
+    <color name="colorGreen">#1aff1a</color>
 
     <color name="colorBrown1">#720f11</color>
     <color name="colorBrown2">#912c3d</color>
@@ -31,7 +33,7 @@
     <color name="mosStart">#780206</color>
     <color name="mosEnd">#061161</color>
 
-    <color name="button_green">#02f232</color>
+    <color name="button_green">#00cc66</color>
 
     <color name="stripe_start">#1FA2FF</color>
     <color name="stripe_mid">#12D8FA</color>
