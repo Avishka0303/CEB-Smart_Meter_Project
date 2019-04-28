@@ -54,12 +54,12 @@ public class HomeFragment extends Fragment {
     private TextView lastDayUsageView;
     private TextView lastMonthUsageView;
     private TextView voltage,power;
+    private TextView lastUpdateTime,powerStatus;
     private PieChart pie_threshold;
 
     private boolean PowerStatus=false;
 
     private DecimalFormat decimalFormat;
-
 
     //runnable for check the power status.
     Handler powerHandler=new Handler();
@@ -92,38 +92,32 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        powerButton=(Button)getView().findViewById(R.id.power_button);
         lastDayUsageView=(TextView) getView().findViewById(R.id.last_day_con);
         lastMonthUsageView=(TextView) getView().findViewById(R.id.last_month_consumption);
         pie_threshold=(PieChart)getView().findViewById(R.id.threshold_pie_chart);
         chargeUptoNow=(TextView)getView().findViewById(R.id.charge_up_now);
         voltage=(TextView)getView().findViewById(R.id.voltage_txt);
         power=(TextView)getView().findViewById(R.id.power_txt);
+        lastUpdateTime=(TextView)getView().findViewById(R.id.last_update_time_txt);
+        powerStatus=(TextView)getView().findViewById(R.id.power_status_txt);
 
         decimalFormat=new DecimalFormat("#.##");
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
-        initializeHomeGUI();
-        initializePowerStatus();
-
+        //initializeHomeGUI();
+        //initializePowerStatus();
         powerHandler.post(checkPowerRunnable);
         guiHandler.post(guiUpdateRunnable);
-        powerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                giveAlert();
-            }
-        });
     }
 
     private void initializePowerStatus() {
         boolean currentStatus=checkPower();
         if(!currentStatus){
-            powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_off,null));
-            powerButton.setText("SYSTEM OFFLINE");
+            powerStatus.setBackground(getResources().getDrawable(R.drawable.power_off_bg,null));
+            powerStatus.setText("OFFLINE");
         }else{
-            powerButton.setBackground(getResources().getDrawable(R.drawable.power_btn_theme,null));
-            powerButton.setText("SYSTEM ONLINE");
+            powerStatus.setBackground(getResources().getDrawable(R.drawable.power_on_bg,null));
+            powerStatus.setText("ONLINE");
         }
     }
 
@@ -135,6 +129,7 @@ public class HomeFragment extends Fragment {
         setThresholdDetails();
     }
 
+//======================================================================================= SET THRESHOLD DETAILS =======================================================================================
     private void setThresholdDetails() {
 
         //setup an arraylist for entries
@@ -182,11 +177,13 @@ public class HomeFragment extends Fragment {
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
 
         PieData data=new PieData(dataSet);
-        data.setValueTextSize(20f);
+        data.setValueTextSize(15f);
         data.setValueTextColor(getResources().getColor(R.color.colorBlackGray,null));
         pie_threshold.setData(data);
 
     }
+
+    //--------------------------------------------------------------------------------- set properties of the pie graphs. ----------------------------------------------------------------------------------
 
     private void setupPieChartForThreshold() {
 
@@ -195,13 +192,13 @@ public class HomeFragment extends Fragment {
         pie_threshold.setDragDecelerationEnabled(true);
 
         pie_threshold.setDrawHoleEnabled(true);
-        pie_threshold.setHoleColor(getResources().getColor(R.color.colorWhite,null));
+        pie_threshold.setHoleColor(getResources().getColor(R.color.colorBlackGray,null));
         pie_threshold.setTransparentCircleRadius(75f);
         pie_threshold.setHoleRadius(70f);
 
         pie_threshold.setCenterText(centerString);
         pie_threshold.setCenterTextSize(15f);
-        pie_threshold.setCenterTextColor(getResources().getColor(R.color.colorPrimary,null));
+        pie_threshold.setCenterTextColor(getResources().getColor(R.color.colorWhite,null));
 
         pie_threshold.animateY(1500,Easing.EaseInOutCubic);
 
@@ -254,43 +251,6 @@ public class HomeFragment extends Fragment {
         return flag;
     }
 
-    //-----------------------------------------------------------set system power toggle--------------------------------------------------------------
-    private void setSystemToggle() {
-        int status=1;
-        if(PowerStatus){
-            PowerStatus=false;
-            status=0;
-        }else{
-            PowerStatus=true;
-            status=1;
-        }
-        String query="UPDATE Meter SET RelayStatus='"+status+"' WHERE MeterSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"'";
-        DB.updateDB(query);
-        initializeHomeGUI();
-    }
-
-    //------------------------------------give alert for power toggle------------------------
-    private void giveAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (PowerStatus)
-            builder.setMessage(R.string.powerbtn_message_off).setTitle(R.string.powerbtn_title);
-        else
-            builder.setMessage(R.string.powerbtn_message_on).setTitle(R.string.powerbtn_title);
-
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                setSystemToggle();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
     private void showThresholdNotification(double overUsage) {
 
         //create notification channel
@@ -325,4 +285,5 @@ public class HomeFragment extends Fragment {
         guiHandler.removeCallbacks(guiUpdateRunnable);
         super.onDestroy();
     }
+
 }

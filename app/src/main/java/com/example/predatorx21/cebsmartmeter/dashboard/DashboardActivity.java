@@ -272,5 +272,4 @@ public class DashboardActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-
 }
