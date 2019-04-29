@@ -12,7 +12,14 @@ public class OverviewUsage {
     private double monthlyDetail[];
     private double dailyDetail[];
     private double lastMonthConsumption;
-    private String voltage,power;
+    private String voltage;
+    private String power;
+
+    public String getDate() {
+        return date;
+    }
+
+    private String date;
 
     public OverviewUsage(String type) {
         if(type.equals("Daily"))
@@ -97,6 +104,7 @@ public class OverviewUsage {
                     initialReading=Double.parseDouble(resultSet.getString("kWh"));
                     voltage=resultSet.getString("V");
                     power=resultSet.getString("w");
+                    date=resultSet.getString("TIME");
                 }
                 i++;
 

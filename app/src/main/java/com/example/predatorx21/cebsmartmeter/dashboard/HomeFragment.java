@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.db.DB;
+import com.example.predatorx21.cebsmartmeter.utilities.DateTrigger;
 import com.example.predatorx21.cebsmartmeter.utilities.OverviewUsage;
 import com.example.predatorx21.cebsmartmeter.utilities.ThresholdSetup;
 import com.github.mikephil.charting.animation.Easing;
@@ -117,7 +118,7 @@ public class HomeFragment extends Fragment {
             powerStatus.setText("OFFLINE");
         }else{
             powerStatus.setBackground(getResources().getDrawable(R.drawable.power_on_bg,null));
-            powerStatus.setText("ONLINE");
+            powerStatus.setText("ONLINE ");
         }
     }
 
@@ -216,9 +217,11 @@ public class HomeFragment extends Fragment {
     private void setDailyUsageDetails() {
         OverviewUsage ovu=new OverviewUsage("Daily");
         double dailyUsage[]=ovu.getDailyDetail();
+        String validateDate[]=new DateTrigger(ovu.getDate()).getTime();
         lastDayUsageView.setText(decimalFormat.format(dailyUsage[1])+" Rs");
         voltage.setText(ovu.getVoltage()+" V");
         power.setText(ovu.getPower()+" W");
+        lastUpdateTime.setText(validateDate[0]+":"+validateDate[1]);
     }
 
 //--------------------------------------last month usage details-------------------------------------------------------------------------------
