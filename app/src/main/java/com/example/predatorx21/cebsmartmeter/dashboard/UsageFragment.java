@@ -301,16 +301,16 @@ public class UsageFragment extends Fragment {
     private void setSelectedBtn(Button btn) {
         //reset all buttons
         dailyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        dailyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
+        dailyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
 
         monthlyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        monthlyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
+        monthlyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
 
         weeklyBtn.setBackground(getResources().getDrawable(R.drawable.not_selected_btn,null));
-        weeklyBtn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
+        weeklyBtn.setTextColor(getResources().getColor(R.color.colorWhite,null));
 
         btn.setBackground(getResources().getDrawable(R.drawable.selected_btn,null));
-        btn.setTextColor(getResources().getColor(R.color.colorBlue,null));
+        btn.setTextColor(getResources().getColor(R.color.colorBlackGray,null));
         btn.setTextSize(15f);
     }
 
