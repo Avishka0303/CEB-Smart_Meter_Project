@@ -248,9 +248,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         String msg="";
         switch (item.getItemId()){
-            case R.id.meter_list:
-                Toast.makeText(getBaseContext(),"Meter List ",Toast.LENGTH_SHORT).show();
-                return true;
             case R.id.logout_tool:
                 Toast.makeText(this,"Log Out",Toast.LENGTH_SHORT).show();
                 Intent loginIntent=new Intent(DashboardActivity.this,LoginActivity.class);

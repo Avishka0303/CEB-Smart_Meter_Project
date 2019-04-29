@@ -27,18 +27,11 @@
 
     <color name="blueGray">#676375</color>
 
-    <color name="coalStart">#EB5757</color>
-    <color name="coalEnd">#000000</color>
     
     <color name="mosStart">#780206</color>
     <color name="mosEnd">#061161</color>
 
     <color name="button_green">#00cc66</color>
-
-    <color name="stripe_start">#1FA2FF</color>
-    <color name="stripe_mid">#12D8FA</color>
-    <color name="stripe_end">#A6FFCB</color>
-
     <color name="netflix_start">#8E0E00</color>
     <color name="netflix_end">#1F1C18</color>
 </resources>

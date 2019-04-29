@@ -12,14 +12,12 @@ public class OverviewUsage {
     private double monthlyDetail[];
     private double dailyDetail[];
     private double lastMonthConsumption;
+    private double lastMonthReading;
+    private double lastMonthCharge[];
     private String voltage;
     private String power;
-
-    public String getDate() {
-        return date;
-    }
-
     private String date;
+    private String dateFormat2;
 
     public OverviewUsage(String type) {
         if(type.equals("Daily"))
@@ -29,6 +27,8 @@ public class OverviewUsage {
         else
             lastMonthDetail();
     }
+
+    public String getDate() { return date; }
 
     public double[] getMonthlyDetail() {
         return monthlyDetail;
@@ -45,6 +45,12 @@ public class OverviewUsage {
     public String getVoltage() { return voltage; }
 
     public String getPower() { return power; }
+
+    public double getLastMonthReading() { return lastMonthReading; }
+
+    public String getDateFormat2() { return dateFormat2; }
+
+    public double[] getLastMonthCharge() { return lastMonthCharge; }
 
     //------------------------------------------------------------------------custom methods-------------------------------------------------------
     private void setupMonthlyDetail() {
@@ -83,6 +89,7 @@ public class OverviewUsage {
         }
         unitsUpToNow=initialReading-lastReading;
         chargeUpToNow=ConsumptionCharge.UsageInCharge(unitsUpToNow);
+        lastMonthReading=initialReading;
         monthlyDetail[0]=unitsUpToNow;
         monthlyDetail[1]=chargeUpToNow[2];
     }
@@ -98,6 +105,7 @@ public class OverviewUsage {
 
         try {
             int i=0;
+
             while (resultSet.next()){
 
                 if(i==0){
@@ -106,6 +114,7 @@ public class OverviewUsage {
                     power=resultSet.getString("w");
                     date=resultSet.getString("TIME");
                 }
+
                 i++;
 
                 String date=resultSet.getString("TIME");
@@ -129,6 +138,7 @@ public class OverviewUsage {
     }
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     private void lastMonthDetail() {
 
         String query="SELECT * FROM MonthlyConsumptionValidateTable WHERE MSerial='"+DashboardActivity.CURRENT_METER_SERIAL+"' ORDER BY MONTH DESC";
@@ -138,8 +148,9 @@ public class OverviewUsage {
         try{
             int i=0;
             while (resultSet.next()){
-                if(i==0)
+                if(i==0){
                     initialReading=Double.parseDouble(resultSet.getString("kWh"));
+                    dateFormat2=resultSet.getString("Month");}
                 i++;
                 if(i==2){
                     lastReading=Double.parseDouble(resultSet.getString("kWh"));
@@ -148,7 +159,9 @@ public class OverviewUsage {
         }catch(Exception e){
             Log.e("MonthError",e.getMessage());
         }
+        lastMonthReading=initialReading;
         lastMonthConsumption=initialReading-lastReading;
+        lastMonthCharge=ConsumptionCharge.UsageInCharge(lastMonthConsumption);
     }
 
 }

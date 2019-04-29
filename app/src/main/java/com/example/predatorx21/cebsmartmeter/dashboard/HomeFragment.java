@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment {
     private static final String CHANNEL1_ID="channel1";
     private String centerString;
 
-    private Button powerButton;
     private TextView chargeUptoNow;
     private TextView lastDayUsageView;
     private TextView lastMonthUsageView;
@@ -106,9 +105,11 @@ public class HomeFragment extends Fragment {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
         //initializeHomeGUI();
-        //initializePowerStatus();
-        powerHandler.post(checkPowerRunnable);
+        initializePowerStatus();
+
         guiHandler.post(guiUpdateRunnable);
+        powerHandler.post(checkPowerRunnable);
+
     }
 
     private void initializePowerStatus() {
@@ -128,6 +129,7 @@ public class HomeFragment extends Fragment {
         setDailyUsageDetails();
         setMonthlyUsageDetails();
         setThresholdDetails();
+
     }
 
 //======================================================================================= SET THRESHOLD DETAILS =======================================================================================
@@ -215,6 +217,7 @@ public class HomeFragment extends Fragment {
 
 //-------------------------------------- daily usage details.---------------------------------------------------------------------------------
     private void setDailyUsageDetails() {
+
         OverviewUsage ovu=new OverviewUsage("Daily");
         double dailyUsage[]=ovu.getDailyDetail();
         String validateDate[]=new DateTrigger(ovu.getDate()).getTime();
@@ -222,6 +225,7 @@ public class HomeFragment extends Fragment {
         voltage.setText(ovu.getVoltage()+" V");
         power.setText(ovu.getPower()+" W");
         lastUpdateTime.setText(validateDate[0]+":"+validateDate[1]);
+
     }
 
 //--------------------------------------last month usage details-------------------------------------------------------------------------------
@@ -288,5 +292,4 @@ public class HomeFragment extends Fragment {
         guiHandler.removeCallbacks(guiUpdateRunnable);
         super.onDestroy();
     }
-
 }
