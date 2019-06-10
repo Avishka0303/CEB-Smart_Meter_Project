@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class DB {
     public static final String DRIVER="net.sourceforge.jtds.jdbc.Driver";
-    public static final String URL="jdbc:jtds:sqlserver://sql5041.site4now.net/DB_A471BF_smartmeter;user=DB_A471BF_smartmeter_admin;password=avishka1996";
+    public static final String URL="jdbc:jtds:sqlserver://sql5041.site4now.net/DB_A49A3F_cebsmartmeter;user=DB_A49A3F_cebsmartmeter_admin;password=avishka1996";
     public static Connection connection;
 
     public static Connection createNewConnection(){

@@ -1,7 +1,5 @@
 package com.example.predatorx21.cebsmartmeter.utilities;
 
-import android.util.Log;
-
 public class DateTrigger {
 
     private String date[];

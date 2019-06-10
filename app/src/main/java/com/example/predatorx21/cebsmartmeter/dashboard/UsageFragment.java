@@ -12,9 +12,11 @@ import android.widget.ScrollView;
 
 import com.example.predatorx21.cebsmartmeter.R;
 import com.example.predatorx21.cebsmartmeter.utilities.GraphData;
+import com.example.predatorx21.cebsmartmeter.utilities.ThresholdSetup;
 import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -33,7 +35,7 @@ import java.util.List;
 public class UsageFragment extends Fragment {
 
     private LineChart unitsUsage;
-    private HorizontalBarChart chargeChart;
+    private BarChart chargeChart;
     private GraphData graphData;
     private Button dailyBtn;
     private Button monthlyBtn;
@@ -41,7 +43,8 @@ public class UsageFragment extends Fragment {
     private Button scrollBottom;
     private ScrollView scrollView;
 
-    private String CURRENT_GRAPH="DAILY";
+    private String CURRENT_GRAPH="DAILY",limitType;
+    private float limit;
 
     public UsageFragment() {
 
@@ -57,7 +60,7 @@ public class UsageFragment extends Fragment {
 
         //initialize the realtime chart.
         unitsUsage=(LineChart)getView().findViewById(R.id.realTime_chart);
-        chargeChart=(HorizontalBarChart)getView().findViewById(R.id.charg_chart);
+        chargeChart=(BarChart)getView().findViewById(R.id.charg_chart);
 
         //initialize buttons
         dailyBtn=(Button)getView().findViewById(R.id.daily_btn);
@@ -72,6 +75,14 @@ public class UsageFragment extends Fragment {
         //creating graph data .
         graphData=new GraphData();
 
+        CURRENT_GRAPH="DAILY";
+
+        ThresholdSetup thresholdSetup=new ThresholdSetup();
+        if(thresholdSetup.getThresholdStatus().equals("1")){
+            limitType=thresholdSetup.getThresholdType();
+            limit=Float.parseFloat(thresholdSetup.getThresholdValue());
+        }
+
         //initialize button actions.
         plotDailyDetails();
         plotDailyChargesDetails();
@@ -79,9 +90,6 @@ public class UsageFragment extends Fragment {
         //initialize button action listeners
         giveButtonActions();
         setSelectedBtn(dailyBtn);
-
-        //give current graph as the graph
-        CURRENT_GRAPH="DAILY";
 
     }
 
@@ -124,6 +132,11 @@ public class UsageFragment extends Fragment {
         leftYAxis.setAxisLineWidth(1.5f);
         leftYAxis.setTextSize(15);
         rightYAxis.setEnabled(false);
+
+        LimitLine limitLine=setGraphLimit();
+        if(limitLine!=null) leftYAxis.addLimitLine(limitLine);
+        else leftYAxis.removeAllLimitLines();
+
         unitsUsage.animateY(1500,Easing.EaseInOutSine);
 
         unitsUsage.setData(data);
@@ -131,7 +144,30 @@ public class UsageFragment extends Fragment {
 
     }
 
-//==========================================================================DAILY CHARGES===============================================================================================
+    private LimitLine setGraphLimit() {
+
+        LimitLine limitLine=null;
+
+        if(CURRENT_GRAPH.equals("DAILY") && limitType.equals("Daily")){
+
+            limitLine=new LimitLine(limit,limitType+" upper limit");
+            limitLine.setLineWidth(4f);
+            limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            limitLine.setTextSize(10f);
+
+        }else if(CURRENT_GRAPH.equals("MONTHLY") && limitType.equals("Monthly")){
+
+            limitLine=new LimitLine(limit,limitType+" upper limit");
+            limitLine.setLineWidth(2f);
+            limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            limitLine.setTextSize(10f);
+
+        }
+
+        return limitLine;
+    }
+
+    //==========================================================================DAILY CHARGES===============================================================================================
     private void plotDailyChargesDetails() {
 
         //GET THE DATA FOR PLOT THE GRAPH
@@ -211,6 +247,11 @@ public class UsageFragment extends Fragment {
         leftYAxis.setAxisLineWidth(1.5f);
         leftYAxis.setTextSize(15);
         rightYAxis.setEnabled(false);
+
+        LimitLine limitLine=setGraphLimit();
+        if(limitLine!=null) leftYAxis.addLimitLine(limitLine);
+        else leftYAxis.removeAllLimitLines();
+
         unitsUsage.animateY(1500,Easing.EaseInOutSine);
 
         //SET THE GRAPH TO PLOT
@@ -220,7 +261,6 @@ public class UsageFragment extends Fragment {
     }
 
 //==================================================================================MONTHLY CHARGES=====================================================================================
-
     private void plotMonthlyChargesDetails() {
 
         //GET THE MONTHLY CHARGES DATA SET
@@ -254,7 +294,6 @@ public class UsageFragment extends Fragment {
     }
 
 //--------------------------------------------------------------------------------MONTHLY DETAILS FINISH---------------------------------------------------------------------------
-
     private void giveButtonActions() {
 
         dailyBtn.setOnClickListener(new View.OnClickListener() {
@@ -297,6 +336,7 @@ public class UsageFragment extends Fragment {
         });
     }
 
+
 //---------------------------------------------------------------------------------------------------SET BUTTONS --------------------------------------------------------------------------
     private void setSelectedBtn(Button btn) {
         //reset all buttons
@@ -314,9 +354,8 @@ public class UsageFragment extends Fragment {
         btn.setTextSize(15f);
     }
 
-    //----------------------------------------------------------------------------------UTILITIES---------------------------------------------------------------------------------------------
 
-    //reverse the string.
+//----------------------------------------------------------------------------------UTILITIES---------------------------------------------------------------------------------------------
     static String[] reverse(String a[], int n) {
         String k, t;
         int i;

@@ -15,11 +15,12 @@
             android:id="@+id/threshold_pie_chart"
             android:layout_width="276dp"
             android:layout_height="276dp"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
-            android:elevation="5dp"
             android:background="@drawable/pie_graph_bg"
+            android:elevation="7dp"
+            android:outlineSpotShadowColor="@color/colorBlackGray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_view_bg_red"
+                    android:drawableLeft="@drawable/ic_usage_min"
                     android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
@@ -101,6 +103,7 @@
                     android:id="@+id/last_day_con"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_usage_min"
                     android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
@@ -125,12 +128,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_view_bg_red"
+                    android:drawableLeft="@drawable/ic_usage_min"
                     android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
                     android:textColor="@color/colorYellow"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
             </TableRow>
+
         </TableLayout>
 
         <TableLayout
@@ -230,12 +235,12 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_view_bg"
+                    android:drawableLeft="@drawable/ic_access_time"
                     android:padding="3dp"
                     android:text="0"
                     android:textAlignment="center"
                     android:textColor="@color/colorYellow"
-                    android:textSize="15sp"
-                    android:drawableLeft="@drawable/ic_access_time"/>
+                    android:textSize="15sp" />
 
                 <TextView
                     android:layout_width="wrap_content"

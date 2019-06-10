@@ -18,11 +18,11 @@
             android:layout_width="395dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:stretchColumns="1"
             android:background="@drawable/table_bg2"
-            android:padding="6dp"
+            android:padding="4dp"
             android:elevation="7dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:textStyle="bold"
                     android:text="Power Limit Detail"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
@@ -54,7 +55,7 @@
                     android:padding="5dp"
                     android:text="Limit Status :"
                     android:textColor="@color/colorYellow"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <Switch
                     android:id="@+id/threshold_switch"
@@ -64,7 +65,7 @@
                     android:text="on"
                     style="@style/SwitchCompactStyleRegular"
                     android:textAlignment="textEnd"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textColor="@color/colorWhite"
                     android:thumbTextPadding="5dp" />
             </TableRow>
@@ -80,7 +81,7 @@
                     android:padding="5dp"
                     android:text="Limit type:"
                     android:textColor="@color/colorYellow"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <Spinner
                     android:id="@+id/type_list"
@@ -99,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
             android:background="@color/colorYellow"
             android:divider="@color/colorWhite"
@@ -123,7 +124,7 @@
                     android:text="Consumption(kWh)"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -131,7 +132,7 @@
                     android:padding="5dp"
                     android:text="Charge(Rs.)"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
             </TableRow>
 
@@ -148,6 +149,7 @@
                     android:ems="10"
                     android:inputType="numberDecimal"
                     android:padding="10dp"
+                    android:textSize="15sp"
                     android:text="0.00" />
 
                 <EditText
@@ -157,6 +159,7 @@
                     android:ems="10"
                     android:inputType="numberDecimal"
                     android:padding="10dp"
+                    android:textSize="15sp"
                     android:text="0.00" />
             </TableRow>
 
@@ -187,6 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:textStyle="bold"
                     android:text="Notification Detail"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
@@ -204,7 +208,7 @@
                     android:padding="5dp"
                     android:text="Show notification :"
                     android:textColor="@color/colorYellow"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <Switch
                     android:id="@+id/notification_switch"
@@ -215,7 +219,7 @@
                     android:text="on"
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:thumbTextPadding="5dp" />
 
             </TableRow>

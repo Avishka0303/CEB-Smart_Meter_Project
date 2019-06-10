@@ -62,7 +62,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/colorYellow"
-        app:itemTextColor="@color/coalEnd"
+        app:itemTextColor="@color/colorBlackGray"
         app:menu="@menu/navigation_drawer_menu"
         app:headerLayout="@layout/nav_drawer_header"
         android:layout_gravity="start" />

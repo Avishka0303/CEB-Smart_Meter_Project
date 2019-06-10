@@ -1,5 +1,6 @@
 package com.example.predatorx21.cebsmartmeter.dashboard;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -26,6 +28,7 @@ import com.example.predatorx21.cebsmartmeter.utilities.ConsumptionCharge;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ControlFragment extends Fragment {
 
@@ -35,6 +38,9 @@ public class ControlFragment extends Fragment {
     private EditText consumption;
     private EditText charge;
     private Button updatebtn;
+    private DatePicker datePicker;
+    private Calendar calendar;
+    private int year,month,day;
 
     public ControlFragment() {
 
@@ -56,6 +62,7 @@ public class ControlFragment extends Fragment {
         notification_sw=(Switch)getView().findViewById(R.id.notification_switch);
         updatebtn=(Button)getView().findViewById(R.id.updateBtn);
 
+
         setupSpinnerTypeList();
         initializeDetails();
         setTextFieldActionListeners();
@@ -64,7 +71,7 @@ public class ControlFragment extends Fragment {
 
     }
 
-    //--------------------------------------------------------------------------UPDATE BUTTON -----------------------------------------------------------------------------------
+//--------------------------------------------------------------------------UPDATE BUTTON -----------------------------------------------------------------------------------
     private void setButtonActionListeners() {
         updatebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +95,7 @@ public class ControlFragment extends Fragment {
         updatebtn.setVisibility(View.INVISIBLE);
     }
 
-    //--------------------------------------------------------------------------SWITCHES ACTIONS----------------------------------------------------------------------------------
+//--------------------------------------------------------------------------SWITCHES ACTIONS----------------------------------------------------------------------------------
     private void setSwitchActionListeners() {
         threshold_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -216,5 +223,10 @@ public class ControlFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 }

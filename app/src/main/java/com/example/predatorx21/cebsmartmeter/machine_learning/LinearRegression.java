@@ -51,12 +51,14 @@ public class LinearRegression {
         svar  = rss / degreesOfFreedom;
         svar1 = svar / xxbar;
         svar0 = svar/N + xbar*xbar*svar1;
+
     }
 
     /**
      * Returns the <em>y</em>-intercept &alpha; of the best of the best-fit line <em>y</em> = &alpha; + &beta; <em>x</em>.
      * @return the <em>y</em>-intercept &alpha; of the best-fit line <em>y = &alpha; + &beta; x</em>
      */
+
     public double intercept() {
         return alpha;
     }

@@ -30,10 +30,12 @@
 
             </com.github.mikephil.charting.charts.LineChart>
 
-            <com.github.mikephil.charting.charts.HorizontalBarChart
+
+            <com.github.mikephil.charting.charts.BarChart
+
                 android:id="@+id/charg_chart"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="300dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -45,7 +47,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
                 app:layout_constraintVertical_bias="1.0">
 
-            </com.github.mikephil.charting.charts.HorizontalBarChart>
+            </com.github.mikephil.charting.charts.BarChart>
 
             <TableLayout
                 android:id="@+id/linearLayout2"
@@ -142,6 +144,7 @@
                         android:layout_height="40dp"
                         android:padding="5dp"
                         android:layout_weight="1"
+                        android:drawableLeft="@drawable/ic_show_chart"
                         android:text="Daily" />
 
                     <Button
@@ -150,6 +153,7 @@
                         android:layout_height="40dp"
                         android:padding="5dp"
                         android:layout_weight="1"
+                        android:drawableLeft="@drawable/ic_show_chart"
                         android:text="Monthly" />
 
                     <Button
@@ -158,6 +162,7 @@
                         android:layout_height="40dp"
                         android:padding="5dp"
                         android:layout_weight="1"
+                        android:drawableLeft="@drawable/ic_show_chart"
                         android:text="Button" />
 
                 </TableRow>

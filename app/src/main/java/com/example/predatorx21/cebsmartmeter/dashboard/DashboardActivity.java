@@ -94,7 +94,11 @@ public class DashboardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setDashboardToOwner();
+        setActionListeners();
 
+    }
+
+    private void setActionListeners() {
         //change the fragment using bottom navigation bar
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -188,7 +192,7 @@ public class DashboardActivity extends AppCompatActivity {
         Intent callIntent=new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse(number));
         if (ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(DashboardActivity.this,"Give Permission for Call",Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(),"Give Permission for Call",Toast.LENGTH_SHORT);
             return;
         }
         startActivity(callIntent);

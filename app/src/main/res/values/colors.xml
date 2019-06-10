@@ -10,9 +10,10 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorYellow">#ffff1a</color>
     <color name="colorBlackGray">#494848</color>
-    <color name="colorLightGray">#cce6ff</color>
+    <color name="colorLightGray">#F0EAF5</color>
     <color name="colorPaleGreen">#ccffcc</color>
     <color name="colorGreen">#1aff1a</color>
+    <color name="colorOrange">#FF8000</color>
 
     <color name="colorBrown1">#720f11</color>
     <color name="colorBrown2">#912c3d</color>
