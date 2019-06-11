@@ -336,7 +336,6 @@ public class UsageFragment extends Fragment {
         });
     }
 
-
 //---------------------------------------------------------------------------------------------------SET BUTTONS --------------------------------------------------------------------------
     private void setSelectedBtn(Button btn) {
         //reset all buttons
